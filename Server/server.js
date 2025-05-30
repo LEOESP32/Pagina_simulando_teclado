@@ -88,6 +88,7 @@ app.get("/feedback", (req, res) => {
 });
 
 let lastPaymentId = "";
+const processedPayments = new Set();
 
 app.post("/update-payment", async (req, res) => {
   console.log("🔔 Webhook recibido:", req.body);
@@ -123,12 +124,13 @@ app.post("/update-payment", async (req, res) => {
     const externalRef = paymentData.external_reference;
     const newPaymentId = paymentData.id;
 
-    if (!externalRef || newPaymentId === lastPaymentId) {
+    // Evita procesar el mismo pago más de una vez
+    if (!externalRef || processedPayments.has(newPaymentId)) {
       console.warn("🔁 Webhook duplicado o sin external_reference");
       return res.status(400).json({ message: "ID inválido o repetido" });
     }
 
-    lastPaymentId = newPaymentId;
+    processedPayments.add(newPaymentId);
 
     const [orderId, precioStr] = externalRef.split("|");
     const precio = parseInt(precioStr) || 0;
