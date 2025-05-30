@@ -148,7 +148,7 @@ app.post("/update-payment", async (req, res) => {
     console.log(`📦 Cantidad: ${cantidad}`);
     console.log("📤 Publicando mensaje MQTT:", payload);
 
-    mqttClient.publish("expendedora/snacko/venta", JSON.stringify(payload), { qos: 1 }, err => {
+    mqttClient.publish("expendedora/snacko/venta", String(Number(orderId)), { qos: 1 }, err => {
       if (err) {
         console.error("❌ Error al publicar en MQTT:", err);
       } else {
