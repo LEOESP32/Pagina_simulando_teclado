@@ -26,7 +26,7 @@ window.addEventListener("load", function () {
                     description,
                     price,
                     quantity,
-                    orderId: suffix.toUpperCase() // ← NUEVO: A, B o C
+                    orderId: suffix
                 };
 
                 console.log("Datos enviados al servidor:", orderData);

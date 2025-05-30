@@ -133,7 +133,7 @@ app.post("/update-payment", async (req, res) => {
     const [orderId, precioStr] = externalRef.split("|");
     const precio = parseInt(precioStr) || 0;
     const cantidad = paymentData.transaction_details?.total_paid_amount ? 1 : "¿?";
-    const producto = orderId;
+    const producto = Number(orderId);
 
     const payload = {
       producto
