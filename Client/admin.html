@@ -1,0 +1,32 @@
+<h2>Panel de administración</h2>
+<div id="admin-productos"></div>
+<script>
+fetch("/api/productos")
+  .then(res => res.json())
+  .then(productos => {
+    const adminDiv = document.getElementById("admin-productos");
+    productos.forEach(p => {
+      adminDiv.innerHTML += `
+        <div>
+          <b>${p.nombre}</b> - Precio actual: $<span id="precio-${p.id}">${p.precio}</span>
+          <input type="number" id="input-${p.id}" value="${p.precio}">
+          <button onclick="actualizarPrecio(${p.id})">Actualizar</button>
+        </div>
+      `;
+    });
+  });
+
+function actualizarPrecio(id) {
+  const nuevoPrecio = document.getElementById("input-" + id).value;
+  fetch("/api/productos/" + id + "/precio", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ precio: Number(nuevoPrecio) })
+  })
+  .then(res => res.json())
+  .then(() => {
+    document.getElementById("precio-" + id).textContent = nuevoPrecio;
+    alert("Precio actualizado");
+  });
+}
+</script>

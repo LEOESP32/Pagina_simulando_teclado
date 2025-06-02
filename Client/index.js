@@ -4,57 +4,78 @@ window.addEventListener("load", function () {
             locale: 'es-AR'
         });
 
-        document.querySelectorAll(".checkout-btn").forEach(button => {
-            button.addEventListener("click", function () {
-                // Deshabilita el botón actual
-                button.disabled = true;
-
-                // Habilita todos los demás botones
-                document.querySelectorAll(".checkout-btn").forEach(otherButton => {
-                    if (otherButton !== button) {
-                        otherButton.disabled = false;
-                    }
+        // Cargar productos desde la API
+        fetch("/api/productos")
+            .then(res => res.json())
+            .then(productos => {
+                const container = document.getElementById("product-container");
+                container.innerHTML = "";
+                productos.forEach(p => {
+                    container.innerHTML += `
+                        <div class="product-card">
+                            <p id="product-description-${p.id}">${p.nombre}</p>
+                            <img src="${p.imagen}" alt="${p.nombre}">
+                            <p>Precio: $<span id="unit-price-${p.id}">${p.precio}</span></p>
+                            <p>Cantidad: <span id="quantity-${p.id}">1</span></p>
+                            <button class="checkout-btn" data-product="${p.id}">Comprar</button>
+                            <div id="button-checkout-${p.id}" class="button-checkout"></div>
+                        </div>
+                    `;
                 });
 
-                const suffix = button.dataset.product;
+                // Agrega listeners a los botones después de crear el HTML
+                document.querySelectorAll(".checkout-btn").forEach(button => {
+                    button.addEventListener("click", function () {
+                        // Deshabilita el botón actual
+                        button.disabled = true;
 
-                const description = document.getElementById(`product-description-${suffix}`).textContent;
-                const price = parseFloat(document.getElementById(`unit-price-${suffix}`).textContent);
-                const quantity = parseInt(document.getElementById(`quantity-${suffix}`).textContent);
+                        // Habilita todos los demás botones
+                        document.querySelectorAll(".checkout-btn").forEach(otherButton => {
+                            if (otherButton !== button) {
+                                otherButton.disabled = false;
+                            }
+                        });
 
-                const orderData = {
-                    description,
-                    price,
-                    quantity,
-                    orderId: suffix
-                };
+                        const suffix = button.dataset.product;
 
-                console.log("Datos enviados al servidor:", orderData);
+                        const description = document.getElementById(`product-description-${suffix}`).textContent;
+                        const price = parseFloat(document.getElementById(`unit-price-${suffix}`).textContent);
+                        const quantity = parseInt(document.getElementById(`quantity-${suffix}`).textContent);
 
-                fetch("https://electronica2-maquina-expendedora.onrender.com/create_preference", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(orderData),
-                })
-                .then(response => response.json())
-                .then(preference => {
-                    if (!preference.id) {
-                        alert("No se pudo generar la preferencia de pago.");
-                        button.disabled = false; // Habilita el botón si ocurre un error
-                        return;
-                    }
-                    const targetId = `button-checkout-${suffix}`;
-                    createCheckoutButton(preference.id, targetId);
-                })
-                .catch(error => {
-                    console.error("Error al comunicarse con el servidor:", error);
-                    alert("Error al generar el pago.");
-                    button.disabled = false; // Habilita el botón si ocurre un error
+                        const orderData = {
+                            description,
+                            price,
+                            quantity,
+                            orderId: suffix
+                        };
+
+                        console.log("Datos enviados al servidor:", orderData);
+
+                        fetch("https://electronica2-maquina-expendedora.onrender.com/create_preference", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify(orderData),
+                        })
+                        .then(response => response.json())
+                        .then(preference => {
+                            if (!preference.id) {
+                                alert("No se pudo generar la preferencia de pago.");
+                                button.disabled = false; // Habilita el botón si ocurre un error
+                                return;
+                            }
+                            const targetId = `button-checkout-${suffix}`;
+                            createCheckoutButton(preference.id, targetId);
+                        })
+                        .catch(error => {
+                            console.error("Error al comunicarse con el servidor:", error);
+                            alert("Error al generar el pago.");
+                            button.disabled = false; // Habilita el botón si ocurre un error
+                        });
+                    });
                 });
             });
-        });
 
         function createCheckoutButton(preferenceId, elementId) {
             const bricksBuilder = mp.bricks();

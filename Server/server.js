@@ -6,6 +6,7 @@ import dotenv from "dotenv";
 import { fileURLToPath } from "url";
 import mqtt from "mqtt";
 import fetch from "node-fetch";
+const db = require('./db');
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -170,6 +171,24 @@ app.get("/payment-status", (req, res) => {
   });
 });
 
+//-----------------------------------------------------------------
+// Obtener todos los productos
+app.get("/api/productos", (req, res) => {
+  db.all("SELECT * FROM productos", [], (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(rows);
+  });
+});
+
+// Actualizar precio de un producto
+app.post("/api/productos/:id/precio", (req, res) => {
+  const { precio } = req.body;
+  db.run("UPDATE productos SET precio = ? WHERE id = ?", [precio, req.params.id], function(err) {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json({ ok: true });
+  });
+});
+//-----------------------------------------------------------------
 app.listen(8080, "0.0.0.0", () => {
   console.log("Servidor corriendo en http://0.0.0.0:8080");
 });
