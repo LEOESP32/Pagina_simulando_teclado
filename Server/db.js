@@ -17,7 +17,7 @@ db.serialize(() => {
       db.run("INSERT INTO productos (id, nombre, precio, imagen) VALUES (11, 'Producto 11', 20, 'imagenes/producto-A.jpg')");
       db.run("INSERT INTO productos (id, nombre, precio, imagen) VALUES (13, 'Producto 13', 35, 'imagenes/producto-B.jpg')");
       db.run("INSERT INTO productos (id, nombre, precio, imagen) VALUES (15, 'Producto 15', 50, 'imagenes/producto-C.jpg')");
-      db.run("INSERT INTO productos (id, nombre, precio, imagen) VALUES (20, 'Producto 20', 40, 'imagenes/producto-D.jpg')");
+      db.run("INSERT INTO productos (id, nombre, precio, imagen) VALUES (20, 'Producto 20', 40, 'imagenes/producto-D.jfif')");
     }
   });
 });
