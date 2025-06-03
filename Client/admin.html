@@ -1,32 +1,92 @@
-<h2>Panel de administración</h2>
-<div id="admin-productos"></div>
-<script>
-fetch("/api/productos")
-  .then(res => res.json())
-  .then(productos => {
-    const adminDiv = document.getElementById("admin-productos");
-    productos.forEach(p => {
-      adminDiv.innerHTML += `
-        <div>
-          <b>${p.nombre}</b> - Precio actual: $<span id="precio-${p.id}">${p.precio}</span>
-          <input type="number" id="input-${p.id}" value="${p.precio}">
-          <button onclick="actualizarPrecio(${p.id})">Actualizar</button>
-        </div>
-      `;
-    });
-  });
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Panel de administración</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      background: #f5f5f5;
+      font-family: Arial, sans-serif;
+    }
+    .admin-panel {
+      background: #fff;
+      max-width: 450px;
+      margin: 50px auto;
+      padding: 32px 32px 24px 32px;
+      border-radius: 12px;
+      box-shadow: 0 2px 16px #0002;
+    }
+    .admin-panel h2 {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .admin-producto {
+      margin-bottom: 18px;
+      font-size: 1.08em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .admin-producto input[type="number"] {
+      width: 70px;
+      margin-left: 8px;
+      margin-right: 8px;
+      padding: 4px;
+    }
+    .admin-producto button {
+      padding: 4px 12px;
+      border-radius: 5px;
+      border: none;
+      background: #ffd600;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.2s;
+    }
+    .admin-producto button:hover {
+      background: #ffb300;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #eee;
+      margin: 16px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-panel">
+    <h2>Panel de administración</h2>
+    <div id="admin-productos"></div>
+  </div>
+  <script>
+    fetch("/api/productos")
+      .then(res => res.json())
+      .then(productos => {
+        const adminDiv = document.getElementById("admin-productos");
+        productos.forEach(p => {
+          adminDiv.innerHTML += `
+            <div class="admin-producto">
+              <b>${p.nombre}</b> - Precio actual: $<span id="precio-${p.id}">${p.precio}</span>
+              <input type="number" id="input-${p.id}" value="${p.precio}">
+              <button onclick="actualizarPrecio(${p.id})">Actualizar</button>
+            </div>
+          `;
+        });
+      });
 
-function actualizarPrecio(id) {
-  const nuevoPrecio = document.getElementById("input-" + id).value;
-  fetch("/api/productos/" + id + "/precio", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ precio: Number(nuevoPrecio) })
-  })
-  .then(res => res.json())
-  .then(() => {
-    document.getElementById("precio-" + id).textContent = nuevoPrecio;
-    alert("Precio actualizado");
-  });
-}
-</script>
+    function actualizarPrecio(id) {
+      const nuevoPrecio = document.getElementById("input-" + id).value;
+      fetch("/api/productos/" + id + "/precio", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ precio: Number(nuevoPrecio) })
+      })
+      .then(res => res.json())
+      .then(() => {
+        document.getElementById("precio-" + id).textContent = nuevoPrecio;
+        alert("Precio actualizado");
+      });
+    }
+  </script>
+</body>
+</html>
