@@ -11,7 +11,7 @@
     }
     .admin-panel {
       background: #fff;
-      max-width: 450px;
+      max-width: 600px;
       margin: 50px auto;
       padding: 32px 32px 24px 32px;
       border-radius: 12px;
@@ -22,11 +22,20 @@
       margin-bottom: 24px;
     }
     .admin-producto {
-      margin-bottom: 18px;
-      font-size: 1.08em;
       display: flex;
       align-items: center;
-      gap: 8px;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 0;
+    }
+    .admin-producto b {
+      min-width: 120px;
+      text-align: left;
+      font-size: 1.08em;
+    }
+    .admin-producto .precio-actual {
+      min-width: 120px;
+      text-align: left;
     }
     .admin-producto input[type="number"] {
       width: 70px;
@@ -46,10 +55,10 @@
     .admin-producto button:hover {
       background: #ffb300;
     }
-    hr {
+    .divider {
       border: none;
-      border-top: 1px solid #eee;
-      margin: 16px 0;
+      border-top: 1px solid #ccc;
+      margin: 0;
     }
   </style>
 </head>
@@ -63,13 +72,15 @@
       .then(res => res.json())
       .then(productos => {
         const adminDiv = document.getElementById("admin-productos");
-        productos.forEach(p => {
+        productos.forEach((p, idx) => {
           adminDiv.innerHTML += `
             <div class="admin-producto">
-              <b>${p.nombre}</b> - Precio actual: $<span id="precio-${p.id}">${p.precio}</span>
+              <b>${p.nombre}</b>
+              <span class="precio-actual">Precio actual: $<span id="precio-${p.id}">${p.precio}</span></span>
               <input type="number" id="input-${p.id}" value="${p.precio}">
               <button onclick="actualizarPrecio(${p.id})">Actualizar</button>
             </div>
+            ${idx < productos.length - 1 ? '<hr class="divider">' : ''}
           `;
         });
       });
