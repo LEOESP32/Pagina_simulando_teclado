@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Login Administrador</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div style="display:flex;justify-content:center;align-items:center;height:100vh;">
+    <form id="login-form" style="background:#fff;padding:30px;border-radius:8px;box-shadow:0 2px 8px #0002;">
+      <h2>Acceso administrador</h2>
+      <input id="admin-user" type="text" placeholder="Usuario" required style="width:100%;margin-bottom:10px;"><br>
+      <input id="admin-pass" type="password" placeholder="Contraseña" required style="width:100%;margin-bottom:10px;"><br>
+      <button type="submit">Ingresar</button>
+      <div id="admin-login-error" style="color:red;margin-top:10px;"></div>
+    </form>
+  </div>
+  <script>
+    document.getElementById("login-form").onsubmit = function(e) {
+      e.preventDefault();
+      const user = document.getElementById("admin-user").value;
+      const pass = document.getElementById("admin-pass").value;
+      fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user, pass })
+      })
+      .then(res => {
+        if (res.ok) {
+          window.location.href = "/admin.html";
+        } else {
+          document.getElementById("admin-login-error").textContent = "Usuario o contraseña incorrectos";
+        }
+      });
+    };
+  </script>
+</body>
+</html>

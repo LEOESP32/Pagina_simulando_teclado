@@ -7,6 +7,8 @@ import { fileURLToPath } from "url";
 import mqtt from "mqtt";
 import fetch from "node-fetch";
 import db from './db.js';
+import session from "express-session";
+import bcrypt from "bcrypt";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -35,6 +37,45 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cors());
 app.use(express.static(path.join(__dirname, "..", "Client")));
+
+// Configura sesiones
+app.use(session({
+  secret: "snacko_super_secreto", // Cambia esto por una clave segura
+  resave: false,
+  saveUninitialized: false,
+  cookie: { secure: false } // true solo si usas HTTPS
+}));
+
+// Usuario y contraseña (puedes cambiar estos valores)
+const ADMIN_USER = "admin";
+const ADMIN_PASS_HASH = await bcrypt.hash("snacko123", 10); // Ejecuta esto una vez y pega el hash aquí
+
+// Endpoint de login
+app.post("/api/login", express.json(), async (req, res) => {
+  const { user, pass } = req.body;
+  if (user === ADMIN_USER && await bcrypt.compare(pass, ADMIN_PASS_HASH)) {
+    req.session.isAdmin = true;
+    res.json({ ok: true });
+  } else {
+    res.status(401).json({ error: "Credenciales incorrectas" });
+  }
+});
+
+// Endpoint de logout
+app.post("/api/logout", (req, res) => {
+  req.session.destroy(() => res.json({ ok: true }));
+});
+
+// Middleware para proteger rutas
+function requireAdmin(req, res, next) {
+  if (req.session.isAdmin) return next();
+  res.status(401).send("No autorizado");
+}
+
+// Sirve admin.html solo si está logueado
+app.get("/admin.html", requireAdmin, (req, res) => {
+  res.sendFile(path.join(__dirname, "../Client/admin.html"));
+});
 
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "..", "Client", "index.html"));

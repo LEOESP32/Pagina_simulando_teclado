@@ -11,6 +11,14 @@
     <h1>BIENVENIDOS! Selecione su producto</h1>
     <div class="product-container" id="product-container"></div>
     <div id="button-checkout"></div>
+    <div style="width:100%;display:flex;justify-content:center;margin-top:40px;">
+      <button id="admin-access-btn" style="padding:12px 32px;font-size:1.1em;cursor:pointer;">Administrador</button>
+    </div>
     <script src="index.js"></script>
+    <script>
+document.getElementById("admin-access-btn").onclick = function() {
+  window.location.href = "/login.html";
+};
+</script>
 </body>
 </html>
