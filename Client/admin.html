@@ -60,12 +60,33 @@
       border-top: 1px solid #ccc;
       margin: 0;
     }
+    #volver-btn {
+      padding: 12px 32px;
+      font-size: 1.1em;
+      cursor: pointer;
+      background: #ffd600;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      transition: background 0.2s;
+      display: block;
+      margin: 32px auto 0 auto;
+      text-align: center;
+    }
+    #volver-btn:hover {
+      background: #ffb300;
+    }
   </style>
 </head>
 <body>
   <div class="admin-panel">
     <h2>Panel de administración</h2>
     <div id="admin-productos"></div>
+    <div style="width:100%;display:flex;justify-content:center;margin-top:32px;">
+      <button id="volver-btn" style="padding:12px 32px;font-size:1.1em;cursor:pointer;background:#ffd600;border:none;border-radius:5px;font-weight:bold;transition:background 0.2s;">
+        Volver
+      </button>
+    </div>
   </div>
   <script>
     fetch("/api/productos")
@@ -98,6 +119,10 @@
         alert("Precio actualizado");
       });
     }
+
+    document.getElementById("volver-btn").onclick = function() {
+      window.location.href = "/";
+    };
   </script>
 </body>
 </html>
