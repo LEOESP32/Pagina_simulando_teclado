@@ -4,33 +4,57 @@ window.addEventListener("load", function () {
             locale: 'es-AR'
         });
 
+        // Define las filas con los IDs deseados
+        const filas = [
+            [11, 13, 15],
+            [20, 21, 22, 23, 24, 25],
+            [30, 31, 32, 33, 34, 35],
+            [40, 41, 42, 43, 44, 45],
+            [50, 51, 52, 53, 54, 55]
+        ];
+
         // Cargar productos desde la API
         fetch("/api/productos")
             .then(res => res.json())
             .then(productos => {
                 const container = document.getElementById("product-container");
-                container.innerHTML = "";
-                productos.forEach(p => {
-                    container.innerHTML += `
-                        <div class="product-card">
-                            <p id="product-description-${p.id}">${p.nombre}</p>
-                            <img src="${p.imagen}" alt="${p.nombre}">
-                            <p>Precio: $<span id="unit-price-${p.id}">${p.precio}</span></p>
-                            <p>Cantidad: <span id="quantity-${p.id}">1</span></p>
-                            <button class="checkout-btn" data-product="${p.id}">Comprar</button>
-                            <div id="button-checkout-${p.id}" class="button-checkout"></div>
-                        </div>
-                    `;
+                container.innerHTML = ""; // Limpia el contenedor
+
+                filas.forEach(idsFila => {
+                    const filaDiv = document.createElement("div");
+                    filaDiv.style.display = "flex";
+                    filaDiv.style.justifyContent = "center";
+                    filaDiv.style.gap = "24px";
+                    filaDiv.style.marginBottom = "32px";
+
+                    idsFila.forEach(id => {
+                        const p = productos.find(prod => prod.id === id);
+                        if (p) {
+                            // Aquí va el código para crear la tarjeta de producto (igual que antes)
+                            const card = document.createElement("div");
+                            card.className = "product-card";
+                            card.innerHTML = `
+                                <div class="product-title">Producto ${p.id}</div>
+                                <img src="${p.imagen}" alt="${p.nombre}" class="product-img">
+                                <div class="product-price">Precio: $${p.precio}</div>
+                                <div class="product-qty">Cantidad: 1</div>
+                                <button class="buy-btn">Comprar</button>
+                            `;
+                            filaDiv.appendChild(card);
+                        }
+                    });
+
+                    container.appendChild(filaDiv);
                 });
 
                 // Agrega listeners a los botones después de crear el HTML
-                document.querySelectorAll(".checkout-btn").forEach(button => {
+                document.querySelectorAll(".buy-btn").forEach(button => {
                     button.addEventListener("click", function () {
                         // Deshabilita el botón actual
                         button.disabled = true;
 
                         // Habilita todos los demás botones
-                        document.querySelectorAll(".checkout-btn").forEach(otherButton => {
+                        document.querySelectorAll(".buy-btn").forEach(otherButton => {
                             if (otherButton !== button) {
                                 otherButton.disabled = false;
                             }
