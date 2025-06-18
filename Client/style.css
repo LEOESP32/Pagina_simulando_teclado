@@ -7,12 +7,14 @@ body {
 }
 
 .product-container {
-    display: flex; /* Activa Flexbox */
-    flex-wrap: nowrap; /* Evita que los productos se envuelvan en otra fila */
-    justify-content: center; /* Centra los productos horizontalmente */
-    gap: 20px; /* Espacio entre los productos */
+    display: flex;
+    flex-direction: column; /* Hace que las tarjetas estén en columna */
+    align-items: center;    /* Centra las tarjetas horizontalmente */
+    gap: 20px;
     padding: 20px;
-    overflow-x: auto; /* Permite desplazamiento horizontal si no caben */
+    overflow-x: unset;      /* Quita el scroll horizontal */
+    overflow-y: auto;       /* Permite scroll vertical si hay muchas tarjetas */
+    flex-wrap: unset;       /* No envuelve, solo columna */
 }
 
 .product-card {
