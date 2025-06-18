@@ -9,18 +9,34 @@ window.addEventListener("load", function () {
             .then(res => res.json())
             .then(productos => {
                 const container = document.getElementById("product-container");
+                const containerHorizontal = document.getElementById("product-container-horizontal");
                 container.innerHTML = "";
+                containerHorizontal.innerHTML = "";
+
                 productos.forEach(p => {
-                    container.innerHTML += `
-                        <div class="product-card">
-                            <p id="product-description-${p.id}">${p.nombre}</p>
-                            <img src="${p.imagen}" alt="${p.nombre}">
-                            <p>Precio: $<span id="unit-price-${p.id}">${p.precio}</span></p>
-                            <p>Cantidad: <span id="quantity-${p.id}">1</span></p>
-                            <button class="checkout-btn" data-product="${p.id}">Comprar</button>
-                            <div id="button-checkout-${p.id}" class="button-checkout"></div>
-                        </div>
-                    `;
+                    if ([50, 51, 52, 53, 54, 55].includes(p.id)) {
+                        containerHorizontal.innerHTML += `
+                            <div class="product-card">
+                                <p id="product-description-${p.id}">${p.nombre}</p>
+                                <img src="${p.imagen}" alt="${p.nombre}">
+                                <p>Precio: $<span id="unit-price-${p.id}">${p.precio}</span></p>
+                                <p>Cantidad: <span id="quantity-${p.id}">1</span></p>
+                                <button class="checkout-btn" data-product="${p.id}">Comprar</button>
+                                <div id="button-checkout-${p.id}" class="button-checkout"></div>
+                            </div>
+                        `;
+                    } else {
+                        container.innerHTML += `
+                            <div class="product-card">
+                                <p id="product-description-${p.id}">${p.nombre}</p>
+                                <img src="${p.imagen}" alt="${p.nombre}">
+                                <p>Precio: $<span id="unit-price-${p.id}">${p.precio}</span></p>
+                                <p>Cantidad: <span id="quantity-${p.id}">1</span></p>
+                                <button class="checkout-btn" data-product="${p.id}">Comprar</button>
+                                <div id="button-checkout-${p.id}" class="button-checkout"></div>
+                            </div>
+                        `;
+                    }
                 });
 
                 // Agrega listeners a los botones después de crear el HTML

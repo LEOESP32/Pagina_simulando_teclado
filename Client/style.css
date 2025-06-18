@@ -17,6 +17,16 @@ body {
     flex-wrap: unset;       /* No envuelve, solo columna */
 }
 
+.product-container-horizontal {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    overflow-x: auto;
+    padding: 20px 0;
+    margin-bottom: 40px;
+    justify-content: flex-start;
+}
+
 .product-card {
     background-color: #1e1e1e;
     color: #f1c40f;
@@ -31,6 +41,11 @@ body {
     flex-direction: column;
     justify-content: space-between; /* Distribuye los elementos uniformemente */
     align-items: center; /* Centra los elementos horizontalmente */
+}
+
+.product-container-horizontal .product-card {
+    min-width: 260px;
+    flex: 0 0 auto;
 }
 
 .product-card h2 {
