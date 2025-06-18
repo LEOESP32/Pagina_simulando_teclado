@@ -229,6 +229,14 @@ app.post("/api/productos/:id/precio", (req, res) => {
     res.json({ ok: true });
   });
 });
+// Actualizar imagen de un producto
+app.post("/api/productos/:id/imagen", requireAdmin, express.json(), (req, res) => {
+  const { imagen } = req.body;
+  db.run("UPDATE productos SET imagen = ? WHERE id = ?", [imagen, req.params.id], function(err) {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json({ ok: true });
+  });
+});
 //-----------------------------------------------------------------
 app.listen(8080, "0.0.0.0", () => {
   console.log("Servidor corriendo en http://0.0.0.0:8080");

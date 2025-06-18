@@ -101,6 +101,11 @@
               <input type="number" id="input-${p.id}" value="${p.precio}">
               <button onclick="actualizarPrecio(${p.id})">Actualizar</button>
             </div>
+            <div class="admin-producto" style="margin-top:-10px;">
+              <img src="${p.imagen}" alt="img" width="60" style="border-radius:6px;box-shadow:0 1px 4px #0002;">
+              <input type="text" id="img-input-${p.id}" value="${p.imagen}" style="width:220px;">
+              <button onclick="actualizarImagen(${p.id})">Cambiar imagen</button>
+            </div>
             ${idx < productos.length - 1 ? '<hr class="divider">' : ''}
           `;
         });
@@ -117,6 +122,20 @@
       .then(() => {
         document.getElementById("precio-" + id).textContent = nuevoPrecio;
         alert("Precio actualizado");
+      });
+    }
+
+    function actualizarImagen(id) {
+      const nuevaImagen = document.getElementById("img-input-" + id).value;
+      fetch("/api/productos/" + id + "/imagen", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ imagen: nuevaImagen })
+      })
+      .then(res => res.json())
+      .then(() => {
+        alert("Imagen actualizada");
+        location.reload();
       });
     }
 
