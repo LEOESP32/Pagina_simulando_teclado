@@ -27,6 +27,7 @@ window.addEventListener("load", function () {
                                 <div id="button-checkout-${p.id}" class="button-checkout"></div>
                             </div>
                         `;
+                    }
                     if ([50, 51, 52, 53, 54, 55].includes(p.id)) {
                         containerHorizontal.innerHTML += `
                             <div class="product-card">
