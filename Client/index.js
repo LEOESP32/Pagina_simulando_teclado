@@ -28,7 +28,7 @@ window.addEventListener("load", function () {
                             </div>
                         `;
                     }
-                    if ([50, 51, 52, 53, 54, 55].includes(p.id)) {
+                    else if ([50, 51, 52, 53, 54, 55].includes(p.id)) {
                         containerHorizontal.innerHTML += `
                             <div class="product-card">
                                 <p id="product-description-${p.id}">${p.nombre}</p>
