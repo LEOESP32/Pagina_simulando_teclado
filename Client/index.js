@@ -9,15 +9,17 @@ window.addEventListener("load", function () {
             .then(res => res.json())
             .then(productos => {
                 const container = document.getElementById("product-container");
+                const container30_35 = document.getElementById("product-container-horizontal-30-35");
                 const container40_45 = document.getElementById("product-container-horizontal-40-45");
                 const containerHorizontal = document.getElementById("product-container-horizontal");
                 container.innerHTML = "";
+                container30_35.innerHTML = "";
                 container40_45.innerHTML = "";
                 containerHorizontal.innerHTML = "";
 
                 productos.forEach(p => {
-                    if ([40, 41, 42, 43, 44, 45].includes(p.id)) {
-                        container40_45.innerHTML += `
+                    if ([30, 31, 32, 33, 34, 35].includes(p.id)) {
+                        container30_35.innerHTML += `
                             <div class="product-card">
                                 <p id="product-description-${p.id}">${p.nombre}</p>
                                 <img src="${p.imagen}" alt="${p.nombre}">
@@ -28,7 +30,18 @@ window.addEventListener("load", function () {
                             </div>
                         `;
                     }
-                    else if ([50, 51, 52, 53, 54, 55].includes(p.id)) {
+                    else if ([40, 41, 42, 43, 44, 45].includes(p.id)) {
+                        container40_45.innerHTML += `
+                            <div class="product-card">
+                                <p id="product-description-${p.id}">${p.nombre}</p>
+                                <img src="${p.imagen}" alt="${p.nombre}">
+                                <p>Precio: $<span id="unit-price-${p.id}">${p.precio}</span></p>
+                                <p>Cantidad: <span id="quantity-${p.id}">1</span></p>
+                                <button class="checkout-btn" data-product="${p.id}">Comprar</button>
+                                <div id="button-checkout-${p.id}" class="button-checkout"></div>
+                            </div>
+                        `;
+                    } else if ([50, 51, 52, 53, 54, 55].includes(p.id)) {
                         containerHorizontal.innerHTML += `
                             <div class="product-card">
                                 <p id="product-description-${p.id}">${p.nombre}</p>
