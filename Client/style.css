@@ -96,14 +96,13 @@ body {
 
 @media (max-width: 768px) {
     .product-container {
-        flex-direction: row !important;
+        display: flex;
+        flex-direction: row;
+        gap: 20px;
         overflow-x: auto;
-        gap: 16px;
-        align-items: center;
-        padding: 10px;
-        flex-wrap: wrap; /* Permite que los productos se envuelvan en filas */
-        justify-content: center; /* Centra los productos en filas */
-        gap: 30px; /* Aumenta el espacio entre las tarjetas */
+        padding: 20px 0;
+        margin-bottom: 40px;
+        justify-content: flex-start;
     }
 
     .product-card {
