@@ -9,7 +9,7 @@ window.addEventListener("load", function () {
             .then(res => res.json())
             .then(productos => {
                 const container = document.getElementById("product-container");
-                const container20_25 = document.getElementById("product-container-horizontal-30-35");
+                const container20_25 = document.getElementById("product-container-horizontal-20-25");
                 const container30_35 = document.getElementById("product-container-horizontal-30-35");
                 const container40_45 = document.getElementById("product-container-horizontal-40-45");
                 const containerHorizontal = document.getElementById("product-container-horizontal");
