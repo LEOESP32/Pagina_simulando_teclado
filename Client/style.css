@@ -94,6 +94,28 @@ body {
     margin-top: 10px;
 }
 
+.admin-keypad {
+  display: grid;
+  grid-template-columns: repeat(3, 60px);
+  gap: 12px;
+  justify-content: center;
+  margin-top: 40px;
+  margin-bottom: 20px;
+}
+.admin-keypad button {
+  padding: 16px 0;
+  font-size: 1.2em;
+  background: #ffd600;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.admin-keypad button:hover {
+  background: #ffb300;
+}
+
 @media (max-width: 768px) {
     .product-container {
         display: flex;

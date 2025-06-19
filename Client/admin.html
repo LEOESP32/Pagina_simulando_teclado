@@ -76,12 +76,45 @@
     #volver-btn:hover {
       background: #ffb300;
     }
+    .admin-keypad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 24px;
+    }
+    .admin-keypad button {
+      padding: 12px;
+      font-size: 1.2em;
+      border: none;
+      border-radius: 5px;
+      background: #007bff;
+      color: white;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .admin-keypad button:hover {
+      background: #0056b3;
+    }
   </style>
 </head>
 <body>
   <div class="admin-panel">
     <h2>Panel de administración</h2>
     <div id="admin-productos"></div>
+    <div class="admin-keypad">
+      <button data-key="1">1</button>
+      <button data-key="2">2</button>
+      <button data-key="3">3</button>
+      <button data-key="4">4</button>
+      <button data-key="5">5</button>
+      <button data-key="6">6</button>
+      <button data-key="7">7</button>
+      <button data-key="8">8</button>
+      <button data-key="9">9</button>
+      <button data-key="0">0</button>
+      <button data-key="e">e</button>
+      <button data-key="c">c</button>
+    </div>
     <div style="width:100%;display:flex;justify-content:center;margin-top:32px;">
       <button id="volver-btn" style="padding:12px 32px;font-size:1.1em;cursor:pointer;background:#ffd600;border:none;border-radius:5px;font-weight:bold;transition:background 0.2s;">
         Volver
@@ -142,6 +175,26 @@
     document.getElementById("volver-btn").onclick = function() {
       window.location.href = "/";
     };
+
+    // Código para el teclado numérico:
+    document.querySelectorAll('.admin-keypad button').forEach(btn => {
+      btn.onclick = function() {
+        const valor = btn.getAttribute('data-key');
+        fetch('/api/mqtt/send', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ valor })
+        })
+        .then(res => res.json())
+        .then(data => {
+          if(data.ok) {
+            alert('Enviado: ' + valor);
+          } else {
+            alert('Error al enviar');
+          }
+        });
+      };
+    });
   </script>
 </body>
 </html>

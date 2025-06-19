@@ -238,6 +238,14 @@ app.post("/api/productos/:id/imagen", requireAdmin, express.json(), (req, res) =
   });
 });
 //-----------------------------------------------------------------
+app.post('/api/mqtt/send', express.json(), (req, res) => {
+  const { valor } = req.body;
+  // Aquí debes usar tu lógica para publicar en MQTT
+  mqttClient.publish("expendedora/snacko/venta", valor, err => {
+    if (err) return res.json({ ok: false });
+    res.json({ ok: true });
+  });
+});
 app.listen(8080, "0.0.0.0", () => {
   console.log("Servidor corriendo en http://0.0.0.0:8080");
 });
