@@ -139,6 +139,15 @@ body {
 }
 /*------------------------------------------------------*/
 @media (max-width: 600px) {
+  #product-container {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 16px;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    width: 100vw;
+    padding-bottom: 10px;
+  }
   .product-card {
     min-width: 140px;
     max-width: 160px;
