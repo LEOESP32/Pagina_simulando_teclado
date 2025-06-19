@@ -21,7 +21,7 @@ window.addEventListener("load", function () {
 
                 productos.forEach(p => {
                     if ([20, 21, 22, 23, 24, 25].includes(p.id)) {
-                        container30_35.innerHTML += `
+                        container20_25.innerHTML += `
                             <div class="product-card">
                                 <p id="product-description-${p.id}">${p.nombre}</p>
                                 <img src="${p.imagen}" alt="${p.nombre}">
