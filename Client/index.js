@@ -12,7 +12,7 @@ window.addEventListener("load", function () {
                 const container20_25 = document.getElementById("product-container-horizontal-20-25");
                 const container30_35 = document.getElementById("product-container-horizontal-30-35");
                 const container40_45 = document.getElementById("product-container-horizontal-40-45");
-                const container50_55 = document.getElementById("product-container-horizontal-40-45");
+                const container50_55 = document.getElementById("product-container-horizontal-50-55");
                 const containerHorizontal = document.getElementById("product-container-horizontal");
                 container.innerHTML = "";
                 container20_25.innerHTML = "";
@@ -45,8 +45,7 @@ window.addEventListener("load", function () {
                                 <div id="button-checkout-${p.id}" class="button-checkout"></div>
                             </div>
                         `;
-                    }
-                    else if ([40, 41, 42, 43, 44, 45].includes(p.id)) {
+                    } else if ([40, 41, 42, 43, 44, 45].includes(p.id)) {
                         container40_45.innerHTML += `
                             <div class="product-card">
                                 <p id="product-description-${p.id}">${p.nombre}</p>
@@ -57,8 +56,7 @@ window.addEventListener("load", function () {
                                 <div id="button-checkout-${p.id}" class="button-checkout"></div>
                             </div>
                         `;
-                    } 
-                    else if ([50, 51, 52, 53, 54, 55].includes(p.id)) {
+                    } else if ([50, 51, 52, 53, 54, 55].includes(p.id)) {
                         container50_55.innerHTML += `
                             <div class="product-card">
                                 <p id="product-description-${p.id}">${p.nombre}</p>
@@ -69,8 +67,7 @@ window.addEventListener("load", function () {
                                 <div id="button-checkout-${p.id}" class="button-checkout"></div>
                             </div>
                         `;
-                    } 
-                    else if ([60, 61, 62, 63, 64, 65].includes(p.id)) {
+                    } else if ([60, 61, 62, 63, 64, 65].includes(p.id)) {
                         containerHorizontal.innerHTML += `
                             <div class="product-card">
                                 <p id="product-description-${p.id}">${p.nombre}</p>
