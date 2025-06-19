@@ -6,16 +6,17 @@ body {
     text-align: center;
 }
 
-.product-container {
+#product-container {
     display: flex;
-    flex-direction: column; /* Hace que las tarjetas estén en columna */
-    align-items: center;    /* Centra las tarjetas horizontalmente */
+    flex-direction: row;
     gap: 20px;
-    padding: 20px;
-    overflow-x: unset;      /* Quita el scroll horizontal */
-    overflow-y: auto;       /* Permite scroll vertical si hay muchas tarjetas */
-    flex-wrap: unset;       /* No envuelve, solo columna */
+    overflow-x: auto;
+    padding: 20px 0;
+    margin-bottom: 40px;
+    justify-content: flex-start;
 }
+
+
 
 .product-container-horizontal {
     display: flex;
