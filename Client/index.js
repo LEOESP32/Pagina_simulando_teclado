@@ -9,16 +9,30 @@ window.addEventListener("load", function () {
             .then(res => res.json())
             .then(productos => {
                 const container = document.getElementById("product-container");
+                const container20_25 = document.getElementById("product-container-horizontal-30-35");
                 const container30_35 = document.getElementById("product-container-horizontal-30-35");
                 const container40_45 = document.getElementById("product-container-horizontal-40-45");
                 const containerHorizontal = document.getElementById("product-container-horizontal");
                 container.innerHTML = "";
+                container20_25.innerHTML = "";
                 container30_35.innerHTML = "";
                 container40_45.innerHTML = "";
                 containerHorizontal.innerHTML = "";
 
                 productos.forEach(p => {
-                    if ([30, 31, 32, 33, 34, 35].includes(p.id)) {
+                    if ([20, 21, 22, 23, 24, 25].includes(p.id)) {
+                        container30_35.innerHTML += `
+                            <div class="product-card">
+                                <p id="product-description-${p.id}">${p.nombre}</p>
+                                <img src="${p.imagen}" alt="${p.nombre}">
+                                <p>Precio: $<span id="unit-price-${p.id}">${p.precio}</span></p>
+                                <p>Cantidad: <span id="quantity-${p.id}">1</span></p>
+                                <button class="checkout-btn" data-product="${p.id}">Comprar</button>
+                                <div id="button-checkout-${p.id}" class="button-checkout"></div>
+                            </div>
+                        `;
+                    }
+                    else if ([30, 31, 32, 33, 34, 35].includes(p.id)) {
                         container30_35.innerHTML += `
                             <div class="product-card">
                                 <p id="product-description-${p.id}">${p.nombre}</p>
