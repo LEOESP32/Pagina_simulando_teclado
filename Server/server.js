@@ -6,12 +6,17 @@ import dotenv from "dotenv";
 import { fileURLToPath } from "url";
 import mqtt from "mqtt";
 import fetch from "node-fetch";
-import pool from './db.js';
+import { createClient } from '@supabase/supabase-js';
+// import pool from './db.js';
 import session from "express-session";
 import bcrypt from "bcrypt";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const supabase = createClient(
+  'https://exmmmwtjdelhhgoxkcyr.supabase.co',
+  process.env.SUPABASE_SERVICE_ROLE
+);
 
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 console.log("Access Token cargado desde .env:", process.env.ACCESS_TOKEN);
@@ -217,10 +222,14 @@ app.get("/payment-status", (req, res) => {
 
 app.get('/api/productos', async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM productos ORDER BY id');
-    res.json(result.rows);
+    const { data, error } = await supabase
+      .from('productos')
+      .select('*')
+      .order('id', { ascending: true });
+    if (error) throw error;
+    res.json(data);
   } catch (err) {
-    console.error("Error al obtener productos:", err); // <--- Agrega esto
+    console.error("Error al obtener productos:", err);
     res.status(500).json({ error: 'Error al obtener productos', detalle: err.message });
   }
 });
@@ -237,10 +246,11 @@ app.get('/api/productos', async (req, res) => {
 app.post("/api/productos/:id/precio", async (req, res) => {
   const { precio } = req.body;
   try {
-    await pool.query(
-      "UPDATE productos SET precio = $1 WHERE id = $2",
-      [precio, req.params.id]
-    );
+    const { error } = await supabase
+      .from('productos')
+      .update({ precio })
+      .eq('id', req.params.id);
+    if (error) throw error;
     res.json({ ok: true });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -251,10 +261,11 @@ app.post("/api/productos/:id/precio", async (req, res) => {
 app.post("/api/productos/:id/imagen", requireAdmin, express.json(), async (req, res) => {
   const { imagen } = req.body;
   try {
-    await pool.query(
-      "UPDATE productos SET imagen = $1 WHERE id = $2",
-      [imagen, req.params.id]
-    );
+    const { error } = await supabase
+      .from('productos')
+      .update({ imagen })
+      .eq('id', req.params.id);
+    if (error) throw error;
     res.json({ ok: true });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -289,3 +300,5 @@ app.post('/api/mqtt/send', express.json(), (req, res) => {
 app.listen(8080, "0.0.0.0", () => {
   console.log("Servidor corriendo en http://0.0.0.0:8080");
 });
+
+
