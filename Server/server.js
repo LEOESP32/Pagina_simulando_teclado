@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 import { fileURLToPath } from "url";
 import mqtt from "mqtt";
 import fetch from "node-fetch";
-import db from './db.js';
+import pool from './db.js';
 import session from "express-session";
 import bcrypt from "bcrypt";
 
