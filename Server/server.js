@@ -220,7 +220,8 @@ app.get('/api/productos', async (req, res) => {
     const result = await pool.query('SELECT * FROM productos ORDER BY id');
     res.json(result.rows);
   } catch (err) {
-    res.status(500).json({ error: 'Error al obtener productos' });
+    console.error("Error al obtener productos:", err); // <--- Agrega esto
+    res.status(500).json({ error: 'Error al obtener productos', detalle: err.message });
   }
 });
 
