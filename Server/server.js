@@ -15,7 +15,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const supabase = createClient(
   'https://exmmmwtjdelhhgoxkcyr.supabase.co',
-  process.env.SUPABASE_SERVICE_ROLE
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV4bW1td3RqZGVsaGhnb3hrY3lyIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MDc3Mjg1NiwiZXhwIjoyMDY2MzQ4ODU2fQ.HfWYBy_kKGu6I09bUejIpPl3vTok9sOgerKEDRG3ImY'
 );
 
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
