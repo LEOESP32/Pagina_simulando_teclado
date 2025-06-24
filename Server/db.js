@@ -1,17 +1,25 @@
-import sqlite3 from 'sqlite3';
-import path from 'path';
+import pkg from 'pg';
+const { Pool } = pkg;
 
-const db = new sqlite3.Database('./productos.db');
+const pool = new Pool({
+  user: 'postgres',
+  host: 'db.exmmmwtjdelhhgoxkcyr.supabase.co',
+  database: 'postgres',
+  password: 'qwertyuiop123',
+  port: 5432,
+  ssl: { rejectUnauthorized: false }
+});
 
-// Crear tabla si no existe
-db.serialize(() => {
+/* Crear tabla si no existe
+db.serialize() => {
   db.run(`CREATE TABLE IF NOT EXISTS productos (
     id INTEGER PRIMARY KEY,
     nombre TEXT,
     precio INTEGER,
     imagen TEXT
   )`);
-  // Insertar productos iniciales si la tabla está vacía
+}
+  Insertar productos iniciales si la tabla está vacía
   db.all("SELECT COUNT(*) as count FROM productos", (err, rows) => {
     if (rows[0].count === 0) {
       db.run("INSERT INTO productos (id, nombre, precio, imagen) VALUES (11, 'Producto 11', 1, 'imagenes/sinproducto.png')");
@@ -49,6 +57,6 @@ db.serialize(() => {
       db.run("INSERT INTO productos (id, nombre, precio, imagen) VALUES (65, 'Producto 65', 1, 'imagenes/sinproducto.png')");
     }
   });
-});
+}); */
 
-export default db;
+export default pool;

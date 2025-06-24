@@ -12,7 +12,7 @@ window.addEventListener("load", function () {
                 const container20_25 = document.getElementById("product-container-horizontal-20-25");
                 const container30_35 = document.getElementById("product-container-horizontal-30-35");
                 const container40_45 = document.getElementById("product-container-horizontal-40-45");
-                const container50_55 = document.getElementById("product-container-horizontal-50-55");
+                const container50_55 = document.getElementById("product-container-horizontal-5-55");
                 const containerHorizontal = document.getElementById("product-container-horizontal");
                 container.innerHTML = "";
                 container20_25.innerHTML = "";

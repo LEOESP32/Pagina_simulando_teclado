@@ -213,16 +213,54 @@ app.get("/payment-status", (req, res) => {
 });
 
 //-----------------------------------------------------------------
-// Obtener todos los productos
-app.get("/api/productos", (req, res) => {
+// Obtener todos los productos SQL
+
+app.get('/api/productos', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM productos ORDER BY id');
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: 'Error al obtener productos' });
+  }
+});
+
+/*app.get("/api/productos", (req, res) => {
   db.all("SELECT * FROM productos", [], (err, rows) => {
     if (err) return res.status(500).json({ error: err.message });
     res.json(rows);
   });
+});*/
+
+// Actualizar precio de un producto SQL
+
+app.post("/api/productos/:id/precio", async (req, res) => {
+  const { precio } = req.body;
+  try {
+    await pool.query(
+      "UPDATE productos SET precio = $1 WHERE id = $2",
+      [precio, req.params.id]
+    );
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
-// Actualizar precio de un producto
-app.post("/api/productos/:id/precio", (req, res) => {
+// Actualizar imagen de un producto
+app.post("/api/productos/:id/imagen", requireAdmin, express.json(), async (req, res) => {
+  const { imagen } = req.body;
+  try {
+    await pool.query(
+      "UPDATE productos SET imagen = $1 WHERE id = $2",
+      [imagen, req.params.id]
+    );
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/* app.post("/api/productos/:id/precio", (req, res) => {
   const { precio } = req.body;
   db.run("UPDATE productos SET precio = ? WHERE id = ?", [precio, req.params.id], function(err) {
     if (err) return res.status(500).json({ error: err.message });
@@ -236,7 +274,8 @@ app.post("/api/productos/:id/imagen", requireAdmin, express.json(), (req, res) =
     if (err) return res.status(500).json({ error: err.message });
     res.json({ ok: true });
   });
-});
+}); */
+
 //-----------------------------------------------------------------
 app.post('/api/mqtt/send', express.json(), (req, res) => {
   const { valor } = req.body;
