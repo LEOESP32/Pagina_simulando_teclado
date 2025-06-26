@@ -11,7 +11,7 @@
     }
     .admin-panel {
       background: #fff;
-      max-width: 600px;
+      max-width: 400px;
       margin: 50px auto;
       padding: 32px 32px 24px 32px;
       border-radius: 12px;
@@ -20,45 +20,6 @@
     .admin-panel h2 {
       text-align: center;
       margin-bottom: 24px;
-    }
-    .admin-producto {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 12px 0;
-    }
-    .admin-producto b {
-      min-width: 120px;
-      text-align: left;
-      font-size: 1.08em;
-    }
-    .admin-producto .precio-actual {
-      min-width: 120px;
-      text-align: left;
-    }
-    .admin-producto input[type="number"] {
-      width: 70px;
-      margin-left: 8px;
-      margin-right: 8px;
-      padding: 4px;
-    }
-    .admin-producto button {
-      padding: 4px 12px;
-      border-radius: 5px;
-      border: none;
-      background: #ffd600;
-      cursor: pointer;
-      font-weight: bold;
-      transition: background 0.2s;
-    }
-    .admin-producto button:hover {
-      background: #ffb300;
-    }
-    .divider {
-      border: none;
-      border-top: 1px solid #ccc;
-      margin: 0;
     }
     #volver-btn {
       padding: 12px 32px;
@@ -100,7 +61,6 @@
 <body>
   <div class="admin-panel">
     <h2>Panel de administración</h2>
-    <div id="admin-productos"></div>
     <div class="admin-keypad">
       <button data-key="1">1</button>
       <button data-key="2">2</button>
@@ -122,56 +82,6 @@
     </div>
   </div>
   <script>
-    fetch("/api/productos")
-      .then(res => res.json())
-      .then(productos => {
-        const adminDiv = document.getElementById("admin-productos");
-        productos.forEach((p, idx) => {
-          adminDiv.innerHTML += `
-            <div class="admin-producto">
-              <b>${p.nombre}</b>
-              <span class="precio-actual">Precio actual: $<span id="precio-${p.id}">${p.precio}</span></span>
-              <input type="number" id="input-${p.id}" value="${p.precio}">
-              <button onclick="actualizarPrecio(${p.id})">Actualizar</button>
-            </div>
-            <div class="admin-producto" style="margin-top:-10px;">
-              <img src="${p.imagen}" alt="img" width="60" style="border-radius:6px;box-shadow:0 1px 4px #0002;">
-              <input type="text" id="img-input-${p.id}" value="${p.imagen}" style="width:220px;">
-              <button onclick="actualizarImagen(${p.id})">Cambiar imagen</button>
-            </div>
-            ${idx < productos.length - 1 ? '<hr class="divider">' : ''}
-          `;
-        });
-      });
-
-    function actualizarPrecio(id) {
-      const nuevoPrecio = document.getElementById("input-" + id).value;
-      fetch("/api/productos/" + id + "/precio", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ precio: Number(nuevoPrecio) })
-      })
-      .then(res => res.json())
-      .then(() => {
-        document.getElementById("precio-" + id).textContent = nuevoPrecio;
-        alert("Precio actualizado");
-      });
-    }
-
-    function actualizarImagen(id) {
-      const nuevaImagen = document.getElementById("img-input-" + id).value;
-      fetch("/api/productos/" + id + "/imagen", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ imagen: nuevaImagen })
-      })
-      .then(res => res.json())
-      .then(() => {
-        alert("Imagen actualizada");
-        location.reload();
-      });
-    }
-
     document.getElementById("volver-btn").onclick = function() {
       window.location.href = "/";
     };
