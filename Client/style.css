@@ -49,6 +49,15 @@ body {
     flex: 0 0 auto;
 }
 
+/* Igualar el tamaño de todas las tarjetas en ambos contenedores */
+#product-container .product-card,
+.product-container-horizontal .product-card {
+    min-width: 260px;
+    width: 260px;
+    height: 400px;
+    flex: 0 0 auto;
+}
+
 .product-card h2 {
     font-size: 1.2rem;
     margin-bottom: 10px;
@@ -139,8 +148,7 @@ body {
 } */
 /*------------------------------------------------------*/
 @media (max-width: 600px) {
-  #product-container,
-  .product-container-horizontal {
+  #product-container {
     display: flex !important;
     flex-direction: row !important;
     gap: 16px;
@@ -149,8 +157,7 @@ body {
     width: 100vw;
     padding-bottom: 10px;
   }
-  #product-container .product-card,
-  .product-container-horizontal .product-card {
+  .product-card {
     min-width: 140px;
     max-width: 160px;
     width: 90vw;
@@ -158,8 +165,7 @@ body {
     padding: 12px 6px;
     font-size: 0.95em;
   }
-  #product-container .product-card img,
-  .product-container-horizontal .product-card img {
+  .product-card img {
     max-width: 90px;
     max-height: 90px;
     margin: 0 auto 8px auto;
