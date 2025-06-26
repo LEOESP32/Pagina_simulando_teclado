@@ -211,10 +211,10 @@ app.post("/update-payment", async (req, res) => {
       }
     });
 
-    // Guarda el pago como procesado en la base de datos
+    // Guarda el pago como procesado en la base de datos (ahora también guarda la fecha)
     const { error: insertError } = await supabase
       .from('pagos_procesados')
-      .insert([{ payment_id: paymentId }]);
+      .insert([{ payment_id: paymentId, fecha: new Date().toISOString() }]);
     if (insertError) {
       console.error("❌ Error al guardar pago procesado:", insertError);
       // No retornes error aquí, ya publicaste en MQTT
