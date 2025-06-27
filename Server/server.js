@@ -151,23 +151,24 @@ app.post("/update-payment", async (req, res) => {
       return res.status(400).json({ message: "Webhook sin ID válido" });
     }
 
-    // Intenta insertar el pago como procesado
-    const { error: insertError } = await supabase
+    // 1. Verifica si el pago ya fue procesado
+    const { data: pagos, error: pagosError } = await supabase
       .from('pagos_procesados')
-      .insert([{ payment_id: paymentId, fecha: new Date().toISOString() }]);
+      .select('payment_id')
+      .eq('payment_id', paymentId)
+      .maybeSingle();
 
-    if (insertError) {
-      // Código de error 23505 = unique_violation en Postgres
-      if (insertError.code === '23505') {
-        console.warn("🔁 Pago ya procesado (inserción duplicada), ignorando:", paymentId);
-        return res.status(200).json({ message: "Pago ya procesado" });
-      } else {
-        console.error("❌ Error al guardar pago procesado:", insertError);
-        return res.status(500).json({ error: "Error al guardar pago procesado" });
-      }
+    if (pagosError) {
+      console.error("❌ Error al consultar pagos_procesados:", pagosError);
+      return res.status(500).json({ error: "Error al consultar pagos_procesados" });
     }
 
-    // Solo si la inserción fue exitosa, consulta el pago y publica en MQTT
+    if (pagos) {
+      console.warn("🔁 Pago ya procesado, ignorando:", paymentId);
+      return res.status(200).json({ message: "Pago ya procesado" });
+    }
+
+    // 2. Consulta el pago en MercadoPago
     const mpResponse = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
       method: "GET",
       headers: {
@@ -183,6 +184,17 @@ app.post("/update-payment", async (req, res) => {
 
     const paymentData = await mpResponse.json();
 
+    // 3. Verifica la fecha del pago (últimas 24 horas)
+    const paymentDate = new Date(paymentData.date_created);
+    const now = new Date();
+    const hoursDiff = Math.abs(now - paymentDate) / 36e5; // Diferencia en horas
+
+    if (hoursDiff > 24) {
+      console.warn("⏰ Pago demasiado antiguo, ignorando:", paymentId, "Fecha:", paymentData.date_created);
+      return res.status(200).json({ message: "Pago antiguo ignorado" });
+    }
+
+    // 4. Valida el external_reference y publica en MQTT solo si todo es válido
     const externalRef = paymentData.external_reference;
     const [orderId, precioStr] = externalRef ? externalRef.split("|") : [];
     const precio = parseInt(precioStr) || 0;
@@ -194,8 +206,17 @@ app.post("/update-payment", async (req, res) => {
       return res.status(400).json({ error: "external_reference inválido" });
     }
 
-    const payload = { producto };
+    // 5. Guarda el pago como procesado
+    const { error: insertError } = await supabase
+      .from('pagos_procesados')
+      .insert([{ payment_id: paymentId, fecha: new Date().toISOString() }]);
+    if (insertError) {
+      console.error("❌ Error al guardar pago procesado:", insertError);
+      return res.status(500).json({ error: "Error al guardar pago procesado" });
+    }
 
+    // 6. Publica en MQTT
+    const payload = { producto };
     console.log(`🛒 Producto comprado: ${producto}`);
     console.log(`💵 Precio: $${precio}`);
     console.log(`📦 Cantidad: ${cantidad}`);
