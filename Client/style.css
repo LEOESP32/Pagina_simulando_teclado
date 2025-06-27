@@ -182,3 +182,14 @@ body {
     padding: 10px 0;
   }
 }
+
+/* Pie de página personalizado */
+.footer-snacko {
+    text-align: center;
+    color: #388e7d;
+    font-size: 0.98rem;
+    margin: 32px 0 12px 0;
+    padding: 12px 0 0 0;
+    opacity: 0.85;
+    letter-spacing: 0.2px;
+}
