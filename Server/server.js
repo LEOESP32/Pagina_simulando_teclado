@@ -151,33 +151,23 @@ app.post("/update-payment", async (req, res) => {
       return res.status(400).json({ message: "Webhook sin ID válido" });
     }
 
-    // Verifica si el pago ya fue procesado
-    const { data: pagos, error: pagosError } = await supabase
-      .from('pagos_procesados')
-      .select('payment_id')
-      .eq('payment_id', paymentId)
-      .maybeSingle();
-
-    if (pagosError) {
-      console.error("❌ Error al consultar pagos_procesados:", pagosError);
-      return res.status(500).json({ error: "Error al consultar pagos_procesados" });
-    }
-
-    if (pagos) {
-      console.warn("🔁 Pago ya procesado, ignorando:", paymentId);
-      return res.status(200).json({ message: "Pago ya procesado" });
-    }
-
-    // Si NO está, guarda el pago como procesado en la base de datos
+    // Intenta insertar el pago como procesado
     const { error: insertError } = await supabase
       .from('pagos_procesados')
       .insert([{ payment_id: paymentId, fecha: new Date().toISOString() }]);
+
     if (insertError) {
-      console.error("❌ Error al guardar pago procesado:", insertError);
-      return res.status(500).json({ error: "Error al guardar pago procesado" });
+      // Código de error 23505 = unique_violation en Postgres
+      if (insertError.code === '23505') {
+        console.warn("🔁 Pago ya procesado (inserción duplicada), ignorando:", paymentId);
+        return res.status(200).json({ message: "Pago ya procesado" });
+      } else {
+        console.error("❌ Error al guardar pago procesado:", insertError);
+        return res.status(500).json({ error: "Error al guardar pago procesado" });
+      }
     }
 
-    // Ahora sí, consulta el pago y publica en MQTT
+    // Solo si la inserción fue exitosa, consulta el pago y publica en MQTT
     const mpResponse = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
       method: "GET",
       headers: {
