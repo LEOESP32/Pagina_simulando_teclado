@@ -151,7 +151,7 @@ app.post("/update-payment", async (req, res) => {
       return res.status(400).json({ message: "Webhook sin ID válido" });
     }
 
-    // --- Verifica si el pago ya fue procesado ---
+    // Verifica si el pago ya fue procesado
     const { data: pagos, error: pagosError } = await supabase
       .from('pagos_procesados')
       .select('payment_id')
@@ -167,8 +167,17 @@ app.post("/update-payment", async (req, res) => {
       console.warn("🔁 Pago ya procesado, ignorando:", paymentId);
       return res.status(200).json({ message: "Pago ya procesado" });
     }
-    // --- FIN ---
 
+    // Si NO está, guarda el pago como procesado en la base de datos
+    const { error: insertError } = await supabase
+      .from('pagos_procesados')
+      .insert([{ payment_id: paymentId, fecha: new Date().toISOString() }]);
+    if (insertError) {
+      console.error("❌ Error al guardar pago procesado:", insertError);
+      return res.status(500).json({ error: "Error al guardar pago procesado" });
+    }
+
+    // Ahora sí, consulta el pago y publica en MQTT
     const mpResponse = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
       method: "GET",
       headers: {
@@ -185,18 +194,17 @@ app.post("/update-payment", async (req, res) => {
     const paymentData = await mpResponse.json();
 
     const externalRef = paymentData.external_reference;
-    const newPaymentId = paymentData.id;
-
-    const [orderId, precioStr] = externalRef.split("|");
+    const [orderId, precioStr] = externalRef ? externalRef.split("|") : [];
     const precio = parseInt(precioStr) || 0;
     const cantidad = paymentData.transaction_details?.total_paid_amount ? 1 : "¿?";
     const producto = Number(orderId);
 
-    const payload = {
-      producto
-      //precio,
-      //cantidad
-    };
+    if (!orderId || isNaN(producto)) {
+      console.warn("❌ external_reference inválido, no se publica en MQTT:", externalRef);
+      return res.status(400).json({ error: "external_reference inválido" });
+    }
+
+    const payload = { producto };
 
     console.log(`🛒 Producto comprado: ${producto}`);
     console.log(`💵 Precio: $${precio}`);
@@ -210,15 +218,6 @@ app.post("/update-payment", async (req, res) => {
         console.log("✅ Mensaje MQTT publicado:", payload);
       }
     });
-
-    // Guarda el pago como procesado en la base de datos (ahora también guarda la fecha)
-    const { error: insertError } = await supabase
-      .from('pagos_procesados')
-      .insert([{ payment_id: paymentId, fecha: new Date().toISOString() }]);
-    if (insertError) {
-      console.error("❌ Error al guardar pago procesado:", insertError);
-      // No retornes error aquí, ya publicaste en MQTT
-    }
 
     res.status(200).json({ message: "Webhook procesado correctamente" });
   } catch (error) {
