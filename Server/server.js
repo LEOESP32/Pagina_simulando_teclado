@@ -211,11 +211,17 @@ app.post("/update-payment", async (req, res) => {
       .from('pagos_procesados')
       .insert([{ payment_id: paymentId, fecha: new Date().toISOString() }]);
     if (insertError) {
-      console.error("❌ Error al guardar pago procesado:", insertError);
-      return res.status(500).json({ error: "Error al guardar pago procesado" });
+      // Si es error de clave duplicada, no publicar en MQTT
+      if (insertError.code === '23505') {
+        console.warn("🔁 Pago ya procesado (inserción duplicada), ignorando:", paymentId);
+        return res.status(200).json({ message: "Pago ya procesado" });
+      } else {
+        console.error("❌ Error al guardar pago procesado:", insertError);
+        return res.status(500).json({ error: "Error al guardar pago procesado" });
+      }
     }
 
-    // 6. Publica en MQTT
+    // 6. Publica en MQTT SOLO si la inserción fue exitosa
     const payload = { producto };
     console.log(`🛒 Producto comprado: ${producto}`);
     console.log(`💵 Precio: $${precio}`);
