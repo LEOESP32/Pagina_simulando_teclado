@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Instrucciones para comprar</title>
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:700,400&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: #ffe082;
+      font-family: 'Montserrat', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #222;
+    }
+    .container {
+      max-width: 420px;
+      margin: 30px auto;
+      background: #fffde7;
+      border-radius: 18px;
+      box-shadow: 0 2px 12px #0001;
+      padding: 28px 24px 24px 24px;
+    }
+    h1 {
+      font-size: 1.7em;
+      font-weight: 700;
+      margin: 0 0 4px 0;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #222;
+    }
+    h2 {
+      font-size: 1.1em;
+      font-weight: 700;
+      margin: 22px 0 10px 0;
+      color: #222;
+      letter-spacing: 0.5px;
+    }
+    .section {
+      margin-bottom: 18px;
+    }
+    .icon {
+      font-size: 1.3em;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 0 0;
+    }
+    li {
+      margin-bottom: 10px;
+      font-size: 1em;
+      display: flex;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      line-height: 1.4;
+    }
+    .li-icon {
+      margin-right: 10px;
+      font-size: 1.2em;
+      flex-shrink: 0;
+      margin-top: 2px;
+      min-width: 24px;
+      text-align: center;
+    }
+    .li-text {
+      flex: 1 1 0;
+      min-width: 0;
+      word-break: break-word;
+      white-space: normal;
+      display: inline-block;
+    }
+    .important {
+      color: #d84315;
+      font-weight: 700;
+    }
+    .note {
+      font-size: 0.98em;
+      color: #444;
+      margin-top: 8px;
+    }
+    .check {
+      color: #388e3c;
+    }
+    .warn {
+      color: #fbc02d;
+    }
+    .alert {
+      color: #d84315;
+    }
+    .section-title {
+      font-weight: 700;
+      margin-bottom: 6px;
+      font-size: 1.05em;
+      color: #222;
+    }
+    .bold {
+      font-weight: 700;
+      white-space: normal;
+    }
+    @media (max-width: 500px) {
+      .container {
+        padding: 14px 2vw 14px 2vw;
+      }
+      h1 {
+        font-size: 1.1em;
+      }
+      li {
+        font-size: 0.98em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>INSTRUCCIONES PARA<br>COMPRAR</h1>
+
+    <div class="section">
+      <div class="section-title"><span class="icon">🤔</span>¿QUÉ NECESITÁS?</div>
+      <ul>
+        <li>
+          <span class="li-icon">📱</span>
+          <span class="li-text"><span class="bold">Un celular</span> con conexión a internet</span>
+        </li>
+        <li>
+          <span class="li-icon">💳</span>
+          <span class="li-text">Una cuenta activa de <span class="bold">Mercado Pago</span></span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="icon">✅</span>CÓMO COMPRAR</div>
+      <ul>
+        <li><span class="li-icon check">1️⃣</span><span class="li-text">Escaneá el código QR que está en la máquina usando tu celular.</span></li>
+        <li>
+          <span class="li-icon check">2️⃣</span>
+          <span class="li-text">Elegí el producto que querés y presioná el botón <span class="bold">"Comprar"</span>.</span>
+        </li>
+        <li><span class="li-icon check">3️⃣</span><span class="li-text">Pagá con Mercado Pago, hacé clic en el botón que aparece luego de seleccionar el producto.</span></li>
+        <li><span class="li-icon check">4️⃣</span><span class="li-text">Una vez aprobado el pago, el producto será dispensado automáticamente.</span></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><span class="icon alert">⚠️</span>ACLARACIONES IMPORTANTES</div>
+      <ul>
+        <li><span class="li-icon alert">👤</span><span class="li-text">Una persona a la vez debe realizar la compra, para evitar errores de dispensacion.</span></li>
+        <li><span class="li-icon alert">☝️</span><span class="li-text">Solo se puede comprar un producto por vez. Si quieres comprar mas de un producto debes realizar otra compra.</span></li>
+        <li>
+          <span class="li-icon alert">🚫</span>
+          <span class="li-text">No inicies una compra si en la pantalla azul de la máquina aparece el mensaje <span class="bold">"RETIRE PRODUCTO"</span>.</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>
