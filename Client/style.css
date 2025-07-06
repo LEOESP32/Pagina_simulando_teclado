@@ -37,16 +37,17 @@ body {
     background-color: #1e1e1e;
     color: #f1c40f;
     width: 250px;
-    height: 400px; /* Altura fija para todas las tarjetas */
+    height: 320px; /* Más compacta */
     border-radius: 12px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    padding: 15px;
+    padding: 12px 10px;
     text-align: center;
     position: relative;
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* Distribuye los elementos uniformemente */
-    align-items: center; /* Centra los elementos horizontalmente */
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold; /* Todo el texto en negrita */
 }
 
 .product-container-horizontal .product-card {
@@ -64,27 +65,30 @@ body {
 }
 
 .product-card h2 {
-    font-size: 1.2rem;
-    margin-bottom: 10px;
-    min-height: 40px; /* Asegura que los títulos ocupen el mismo espacio */
+    font-size: 1.1rem;
+    margin-bottom: 6px;
+    min-height: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
+    font-weight: bold;
 }
 
 .product-card img {
-    width: 150px;
-    height: 150px;
+    width: 110px;
+    height: 110px;
     object-fit: cover;
     border-radius: 10px;
-    margin-bottom: 10px;
+    margin-bottom: 6px;
+    margin-top: 4px;
 }
 
 .price {
-    font-size: 1.1rem;
-    margin: 5px 0;
+    font-size: 1rem;
+    margin: 4px 0 0 0;
     color: #ffffff;
+    font-weight: bold;
 }
 
 .checkout-btn {
@@ -163,17 +167,18 @@ body {
     padding-bottom: 10px;
   }
   .product-card {
-    min-width: 140px;
-    max-width: 160px;
+    min-width: 120px;
+    max-width: 140px;
     width: 90vw;
-    margin: 0 8px 16px 8px;
-    padding: 12px 6px;
-    font-size: 0.95em;
+    margin: 0 6px 12px 6px;
+    padding: 8px 4px;
+    font-size: 0.93em;
+    height: 220px;
   }
   .product-card img {
-    max-width: 90px;
-    max-height: 90px;
-    margin: 0 auto 8px auto;
+    max-width: 70px;
+    max-height: 70px;
+    margin: 0 auto 4px auto;
     display: block;
   }
   .checkout-btn {
@@ -201,14 +206,16 @@ body {
     color: #fff;
   }
   .product-card {
-    background-color: #a89e9e63 !important;
+    background-color: #a89e9eab !important;
     color: #ffffff !important;
     border: 1.5px solid #bbb;
     box-shadow: 0 4px 16px #0004;
+    font-weight: bold;
   }
   .product-card h2,
   .price {
     color: #ffffff !important;
+    font-weight: bold;
   }
   .checkout-btn {
     background-color: #fcce46 !important;

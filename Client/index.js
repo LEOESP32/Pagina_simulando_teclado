@@ -28,7 +28,7 @@ window.addEventListener("load", function () {
                                 <p id="product-description-${p.id}">${p.nombre}</p>
                                 <img src="${p.imagen}" alt="${p.nombre}">
                                 <p>Precio: $<span id="unit-price-${p.id}">${p.precio}</span></p>
-                                <p>Cantidad: <span id="quantity-${p.id}">1</span></p>
+                                
                                 <button class="checkout-btn" data-product="${p.id}">Comprar</button>
                                 <div id="button-checkout-${p.id}" class="button-checkout"></div>
                             </div>
@@ -40,7 +40,7 @@ window.addEventListener("load", function () {
                                 <p id="product-description-${p.id}">${p.nombre}</p>
                                 <img src="${p.imagen}" alt="${p.nombre}">
                                 <p>Precio: $<span id="unit-price-${p.id}">${p.precio}</span></p>
-                                <p>Cantidad: <span id="quantity-${p.id}">1</span></p>
+                                
                                 <button class="checkout-btn" data-product="${p.id}">Comprar</button>
                                 <div id="button-checkout-${p.id}" class="button-checkout"></div>
                             </div>
@@ -51,7 +51,7 @@ window.addEventListener("load", function () {
                                 <p id="product-description-${p.id}">${p.nombre}</p>
                                 <img src="${p.imagen}" alt="${p.nombre}">
                                 <p>Precio: $<span id="unit-price-${p.id}">${p.precio}</span></p>
-                                <p>Cantidad: <span id="quantity-${p.id}">1</span></p>
+                                
                                 <button class="checkout-btn" data-product="${p.id}">Comprar</button>
                                 <div id="button-checkout-${p.id}" class="button-checkout"></div>
                             </div>
@@ -62,7 +62,7 @@ window.addEventListener("load", function () {
                                 <p id="product-description-${p.id}">${p.nombre}</p>
                                 <img src="${p.imagen}" alt="${p.nombre}">
                                 <p>Precio: $<span id="unit-price-${p.id}">${p.precio}</span></p>
-                                <p>Cantidad: <span id="quantity-${p.id}">1</span></p>
+                                
                                 <button class="checkout-btn" data-product="${p.id}">Comprar</button>
                                 <div id="button-checkout-${p.id}" class="button-checkout"></div>
                             </div>
@@ -73,7 +73,7 @@ window.addEventListener("load", function () {
                                 <p id="product-description-${p.id}">${p.nombre}</p>
                                 <img src="${p.imagen}" alt="${p.nombre}">
                                 <p>Precio: $<span id="unit-price-${p.id}">${p.precio}</span></p>
-                                <p>Cantidad: <span id="quantity-${p.id}">1</span></p>
+                                
                                 <button class="checkout-btn" data-product="${p.id}">Comprar</button>
                                 <div id="button-checkout-${p.id}" class="button-checkout"></div>
                             </div>
@@ -84,7 +84,7 @@ window.addEventListener("load", function () {
                                 <p id="product-description-${p.id}">${p.nombre}</p>
                                 <img src="${p.imagen}" alt="${p.nombre}">
                                 <p>Precio: $<span id="unit-price-${p.id}">${p.precio}</span></p>
-                                <p>Cantidad: <span id="quantity-${p.id}">1</span></p>
+                                
                                 <button class="checkout-btn" data-product="${p.id}">Comprar</button>
                                 <div id="button-checkout-${p.id}" class="button-checkout"></div>
                             </div>
@@ -109,8 +109,8 @@ window.addEventListener("load", function () {
 
                         const description = document.getElementById(`product-description-${suffix}`).textContent;
                         const price = parseFloat(document.getElementById(`unit-price-${suffix}`).textContent);
-                        const quantity = parseInt(document.getElementById(`quantity-${suffix}`).textContent);
-
+                        const quantity = 1;
+                        
                         const orderData = {
                             description,
                             price,

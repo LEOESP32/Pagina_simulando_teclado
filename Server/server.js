@@ -23,6 +23,7 @@ console.log("Access Token cargado desde .env:", process.env.ACCESS_TOKEN);
 
 const app = express();
 
+
 // MQTT Configuración
 const mqttClient = mqtt.connect("mqtts://736ca49d528b4c41bfd924bc491b6878.s1.eu.hivemq.cloud:8883", {
   username: "snacko",
