@@ -194,26 +194,27 @@ body {
     letter-spacing: 0.2px;
 }
 
+/* Adaptar tarjetas solo en modo oscuro del sistema */
 @media (prefers-color-scheme: dark) {
   body {
-    background-color: #181818;
+    background-color: #222 !important;
     color: #fff;
   }
   .product-card {
-    background-color: #292929;
-    color: #ffe082;
-    border: 1.5px solid #444;
-    box-shadow: 0 4px 16px #0006;
+    background-color: #a89e9e63 !important;
+    color: #ffffff !important;
+    border: 1.5px solid #bbb;
+    box-shadow: 0 4px 16px #0004;
   }
   .product-card h2,
   .price {
-    color: #fffde7;
+    color: #ffffff !important;
   }
   .checkout-btn {
-    background-color: #ffe082;
-    color: #181818;
+    background-color: #fcce46 !important;
+    color: #222 !important;
   }
   .checkout-btn:hover {
-    background-color: #ffd54f;
+    background-color: #ffc402 !important;
   }
 }
