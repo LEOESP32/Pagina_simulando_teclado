@@ -1,6 +1,6 @@
 window.addEventListener("load", function () {
     if (typeof MercadoPago !== "undefined") {
-        const mp = new MercadoPago('APP_USR-84817fc5-5c0c-4ecb-b68e-b9174b2aa96d', {
+        const mp = new MercadoPago('APP_USR-8abd3bff-e01e-4c32-97fa-e32a363d9049', {
             locale: 'es-AR'
         });
 
