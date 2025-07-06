@@ -193,3 +193,27 @@ body {
     opacity: 0.85;
     letter-spacing: 0.2px;
 }
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #181818;
+    color: #fff;
+  }
+  .product-card {
+    background-color: #292929;
+    color: #ffe082;
+    border: 1.5px solid #444;
+    box-shadow: 0 4px 16px #0006;
+  }
+  .product-card h2,
+  .price {
+    color: #fffde7;
+  }
+  .checkout-btn {
+    background-color: #ffe082;
+    color: #181818;
+  }
+  .checkout-btn:hover {
+    background-color: #ffd54f;
+  }
+}
