@@ -37,30 +37,27 @@ body {
     background-color: #1e1e1e;
     color: #f1c40f;
     width: 250px;
-    height: 320px; /* Más compacta */
     border-radius: 12px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    padding: 12px 10px;
+    padding: 10px 10px; /* Menos padding para más compacidad */
     text-align: center;
     position: relative;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     align-items: center;
-    font-weight: bold; /* Todo el texto en negrita */
+    font-weight: bold;
 }
 
 .product-container-horizontal .product-card {
-    min-width: 260px;
     flex: 0 0 auto;
 }
 
 /* Igualar el tamaño de todas las tarjetas en ambos contenedores */
 #product-container .product-card,
 .product-container-horizontal .product-card {
-    min-width: 260px;
-    width: 260px;
-    height: 400px;
+    min-width: 240px;
+    width: 240px;
+    /* height: 400px; */
     flex: 0 0 auto;
 }
 
@@ -75,13 +72,25 @@ body {
     font-weight: bold;
 }
 
+.product-card p {
+    margin-top: 2px;
+    margin-bottom: 2px;
+    line-height: 1.1;
+}
+
+.product-card p:first-child {
+    margin-top: 8px;
+    margin-bottom: 2px;
+}
+
 .product-card img {
     width: 110px;
     height: 110px;
     object-fit: cover;
     border-radius: 10px;
-    margin-bottom: 6px;
-    margin-top: 4px;
+    margin-bottom: 2px;
+    margin-top: 2px;
+    display: block;
 }
 
 .price {
