@@ -1,6 +1,6 @@
 window.addEventListener("load", function () {
     if (typeof MercadoPago !== "undefined") {
-        const mp = new MercadoPago('APP_USR-583fd966-adfc-42c4-88a2-b9e005e7ff80', {
+        const mp = new MercadoPago('APP_USR-84817fc5-5c0c-4ecb-b68e-b9174b2aa96d', {
             locale: 'es-AR'
         });
 
@@ -84,7 +84,7 @@ window.addEventListener("load", function () {
                                 <p id="product-description-${p.id}">${p.nombre}</p>
                                 <img src="${p.imagen}" alt="${p.nombre}">
                                 <p>Precio: $<span id="unit-price-${p.id}">${p.precio}</span></p>
-                                
+                                <p>Cantidad: <span id="quantity-${p.id}">1</span></p>
                                 <button class="checkout-btn" data-product="${p.id}">Comprar</button>
                                 <div id="button-checkout-${p.id}" class="button-checkout"></div>
                             </div>
@@ -109,7 +109,8 @@ window.addEventListener("load", function () {
 
                         const description = document.getElementById(`product-description-${suffix}`).textContent;
                         const price = parseFloat(document.getElementById(`unit-price-${suffix}`).textContent);
-                        const quantity = 1;
+                        const quantity = parseInt(document.getElementById(`quantity-${suffix}`).textContent);
+
                         const orderData = {
                             description,
                             price,
