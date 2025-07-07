@@ -33,10 +33,11 @@ mqttClient.on("connect", () => console.log("✅ Conectado al broker MQTT"));
 mqttClient.on("error", err => console.error("❌ Error MQTT:", err));
 
 // Mercado Pago
-const client = new MercadoPagoConfig({
-  accessToken: process.env.ACCESS_TOKEN,
-  options: { timeout: 5000 },
-});
+const client = new MercadoPagoConfig({ accessToken: 'APP_USR-4258140809744926-040100-e624f4abe67d98304f993caa40c81e84-228466455' });
+//const client = new MercadoPagoConfig({
+//  accessToken: process.env.ACCESS_TOKEN,
+//  options: { timeout: 5000 },
+//});
 const preference = new Preference(client);
 
 app.use(express.urlencoded({ extended: false }));
