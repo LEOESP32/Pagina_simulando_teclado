@@ -141,6 +141,15 @@ let lastPaymentId = "";
 app.post("/update-payment", async (req, res) => {
   console.log("🔔 Webhook recibido:", req.body);
 
+  // Responde 200 OK si es una notificación de pago creada (estructura ejemplo de Mercado Pago)
+  if (
+    req.body?.action === "payment.created" &&
+    req.body?.type === "payment" &&
+    req.body?.data?.id
+  ) {
+    return res.status(200).json({ message: "Notificación payment.created recibida" });
+  }
+
   if (req.body.topic && req.body.topic !== "payment") {
     console.log("ℹ️ Notificación ignorada (tipo no relevante):", req.body.topic);
     return res.status(200).json({ message: "Tipo de notificación no procesado" });
