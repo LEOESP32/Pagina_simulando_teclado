@@ -171,20 +171,23 @@ app.post("/update-payment", async (req, res) => {
     }
 
     // 2. Consulta el pago en MercadoPago
-    const mpResponse = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
+     /*
+     const mpResponse = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
       },
     });
 
+    
     if (!mpResponse.ok) {
       const errorText = await mpResponse.text();
       console.error("❌ Error al consultar el pago:", errorText);
       return res.status(500).json({ error: "No se pudo consultar el pago a MP" });
     }
+    */
 
-    const paymentData = await mpResponse.json();
+    //const paymentData = await mpResponse.json();
 
     // 3. Verifica la fecha del pago (últimas 24 horas)
     const paymentDate = new Date(paymentData.date_created);
