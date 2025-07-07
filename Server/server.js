@@ -146,13 +146,16 @@ app.post("/update-payment", async (req, res) => {
 
   setImmediate(async () => {
     try {
+      // 1. Extrae el paymentId y external_reference del webhook
       const paymentId = req.body?.data?.id || req.body?.resource;
+      const externalRef = req.body?.external_reference || req.body?.data?.external_reference;
+
       if (!paymentId) {
         console.warn("❌ No se recibió un ID de pago válido en el webhook.");
         return;
       }
 
-      // 1. Verifica si el pago ya fue procesado
+      // 2. Verifica si el pago ya fue procesado
       const { data: pagos, error: pagosError } = await supabase
         .from('pagos_procesados')
         .select('payment_id')
@@ -169,27 +172,12 @@ app.post("/update-payment", async (req, res) => {
         return;
       }
 
-      // 2. Consulta el pago en MercadoPago para obtener external_reference
-      const mpResponse = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
-        },
-      });
-
-      if (!mpResponse.ok) {
-        const errorText = await mpResponse.text();
-        console.error("❌ Error al consultar el pago:", errorText);
-        return;
-      }
-
-      const paymentData = await mpResponse.json();
-
       // 3. Extrae orderId del external_reference
-      const externalRef = paymentData.external_reference;
-      const [orderId] = externalRef ? externalRef.split("|") : [];
+      // El external_reference debe venir en el webhook, si no, no se puede saber el producto
+      const ref = externalRef || req.body?.data?.external_reference;
+      const [orderId] = ref ? ref.split("|") : [];
       if (!orderId) {
-        console.warn("❌ external_reference inválido, no se publica en MQTT:", externalRef);
+        console.warn("❌ external_reference inválido o ausente, no se publica en MQTT:", ref);
         return;
       }
 
