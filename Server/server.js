@@ -141,120 +141,88 @@ let lastPaymentId = "";
 app.post("/update-payment", async (req, res) => {
   console.log("🔔 Webhook recibido:", req.body);
 
-  // Responde 200 OK si es una notificación de pago creada (estructura ejemplo de Mercado Pago)
-  if (
-    req.body?.action === "payment.created" &&
-    req.body?.type === "payment" &&
-    req.body?.data?.id
-  ) {
-    return res.status(200).json({ message: "Notificación payment.created recibida" });
-  }
+  // Siempre responde 200 OK a Mercado Pago lo antes posible
+  res.status(200).json({ message: "Notificación recibida" });
 
-  if (req.body.topic && req.body.topic !== "payment") {
-    console.log("ℹ️ Notificación ignorada (tipo no relevante):", req.body.topic);
-    return res.status(200).json({ message: "Tipo de notificación no procesado" });
-  }
-
-  try {
-    const paymentId = req.body?.data?.id || req.body?.resource;
-    if (!paymentId) {
-      console.warn("❌ No se recibió un ID de pago válido en el webhook.");
-      return res.status(400).json({ message: "Webhook sin ID válido" });
-    }
-
-    // 1. Verifica si el pago ya fue procesado
-    const { data: pagos, error: pagosError } = await supabase
-      .from('pagos_procesados')
-      .select('payment_id')
-      .eq('payment_id', paymentId)
-      .maybeSingle();
-
-    if (pagosError) {
-      console.error("❌ Error al consultar pagos_procesados:", pagosError);
-      return res.status(500).json({ error: "Error al consultar pagos_procesados" });
-    }
-
-    if (pagos) {
-      console.warn("🔁 Pago ya procesado, ignorando:", paymentId);
-      return res.status(200).json({ message: "Pago ya procesado" });
-    }
-
-    // 2. Consulta el pago en MercadoPago
-     /*
-     const mpResponse = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
-      },
-    });
-
-    
-    if (!mpResponse.ok) {
-      const errorText = await mpResponse.text();
-      console.error("❌ Error al consultar el pago:", errorText);
-      return res.status(500).json({ error: "No se pudo consultar el pago a MP" });
-    }
-    */
-
-    //const paymentData = await mpResponse.json();
-
-    // 3. Verifica la fecha del pago (últimas 24 horas)
-    const paymentDate = new Date(paymentData.date_created);
-    const now = new Date();
-    const hoursDiff = Math.abs(now - paymentDate) / 36e5; // Diferencia en horas
-
-    if (hoursDiff > 24) {
-      console.warn("⏰ Pago demasiado antiguo, ignorando:", paymentId, "Fecha:", paymentData.date_created);
-      return res.status(200).json({ message: "Pago antiguo ignorado" });
-    }
-
-    // 4. Valida el external_reference y publica en MQTT solo si todo es válido
-    const externalRef = paymentData.external_reference;
-    const [orderId, precioStr] = externalRef ? externalRef.split("|") : [];
-    const precio = parseInt(precioStr) || 0;
-    const cantidad = paymentData.transaction_details?.total_paid_amount ? 1 : "¿?";
-    const producto = Number(orderId);
-
-    if (!orderId || isNaN(producto)) {
-      console.warn("❌ external_reference inválido, no se publica en MQTT:", externalRef);
-      return res.status(400).json({ error: "external_reference inválido" });
-    }
-
-    // 5. Guarda el pago como procesado
-    const { error: insertError } = await supabase
-      .from('pagos_procesados')
-      .insert([{ payment_id: paymentId, fecha: new Date().toISOString() }]);
-    if (insertError) {
-      // Si es error de clave duplicada, no publicar en MQTT
-      if (insertError.code === '23505') {
-        console.warn("🔁 Pago ya procesado (inserción duplicada), ignorando:", paymentId);
-        return res.status(200).json({ message: "Pago ya procesado" });
-      } else {
-        console.error("❌ Error al guardar pago procesado:", insertError);
-        return res.status(500).json({ error: "Error al guardar pago procesado" });
+  // --- Lógica de procesamiento MQTT después de responder ---
+  setImmediate(async () => {
+    try {
+      const paymentId = req.body?.data?.id || req.body?.resource;
+      if (!paymentId) {
+        console.warn("❌ No se recibió un ID de pago válido en el webhook.");
+        return;
       }
-    }
 
-    // 6. Publica en MQTT SOLO si la inserción fue exitosa
-    const payload = { producto };
-    console.log(`🛒 Producto comprado: ${producto}`);
-    console.log(`💵 Precio: $${precio}`);
-    console.log(`📦 Cantidad: ${cantidad}`);
-    console.log("📤 Publicando mensaje MQTT:", payload);
+      // 1. Verifica si el pago ya fue procesado
+      const { data: pagos, error: pagosError } = await supabase
+        .from('pagos_procesados')
+        .select('payment_id')
+        .eq('payment_id', paymentId)
+        .maybeSingle();
 
-    mqttClient.publish("expendedora/snacko/venta", String(Number(orderId)), { qos: 1 }, err => {
-      if (err) {
-        console.error("❌ Error al publicar en MQTT:", err);
-      } else {
-        console.log("✅ Mensaje MQTT publicado:", payload);
+      if (pagosError) {
+        console.error("❌ Error al consultar pagos_procesados:", pagosError);
+        return;
       }
-    });
 
-    res.status(200).json({ message: "Webhook procesado correctamente" });
-  } catch (error) {
-    console.error("❌ Error en /update-payment:", error);
-    res.status(500).json({ error: "Error procesando el webhook" });
-  }
+      if (pagos) {
+        console.warn("🔁 Pago ya procesado, ignorando:", paymentId);
+        return;
+      }
+
+      // Aquí puedes obtener los datos del pago (usa los datos del webhook o consulta la API si es necesario)
+      // Por ejemplo, si tienes los datos necesarios en el webhook:
+      // const externalRef = req.body.external_reference; // Ajusta según tu estructura
+
+      // Si necesitas consultar la API de Mercado Pago, descomenta y ajusta:
+      /*
+      const mpResponse = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
+        },
+      });
+      if (!mpResponse.ok) {
+        const errorText = await mpResponse.text();
+        console.error("❌ Error al consultar el pago:", errorText);
+        return;
+      }
+      const paymentData = await mpResponse.json();
+      */
+
+      // Suponiendo que tienes paymentData:
+      // const externalRef = paymentData.external_reference;
+      // const [orderId, precioStr] = externalRef ? externalRef.split("|") : [];
+      // const producto = Number(orderId);
+
+      // Marca el pago como procesado
+      const { error: insertError } = await supabase
+        .from('pagos_procesados')
+        .insert([{ payment_id: paymentId, fecha: new Date().toISOString() }]);
+      if (insertError) {
+        if (insertError.code === '23505') {
+          console.warn("🔁 Pago ya procesado (inserción duplicada), ignorando:", paymentId);
+          return;
+        } else {
+          console.error("❌ Error al guardar pago procesado:", insertError);
+          return;
+        }
+      }
+
+      // Publica en MQTT (ajusta el payload según tus necesidades)
+      const payload = { producto: "ID_DEL_PRODUCTO" }; // Ajusta esto
+      mqttClient.publish("expendedora/snacko/venta", String(Number(orderId)), { qos: 1 }, err => {
+        if (err) {
+          console.error("❌ Error al publicar en MQTT:", err);
+        } else {
+          console.log("✅ Mensaje MQTT publicado:", payload);
+        }
+      });
+
+    } catch (error) {
+      console.error("❌ Error en lógica post-respuesta /update-payment:", error);
+    }
+  });
 });
 
 app.get("/payment-status", (req, res) => {
