@@ -141,10 +141,9 @@ let lastPaymentId = "";
 app.post("/update-payment", async (req, res) => {
   console.log("🔔 Webhook recibido:", req.body);
 
-  // Siempre responde 200 OK a Mercado Pago lo antes posible
+  // Responde 200 OK a Mercado Pago lo antes posible
   res.status(200).json({ message: "Notificación recibida" });
 
-  // --- Lógica de procesamiento MQTT después de responder ---
   setImmediate(async () => {
     try {
       const paymentId = req.body?.data?.id || req.body?.resource;
@@ -170,32 +169,31 @@ app.post("/update-payment", async (req, res) => {
         return;
       }
 
-      // Aquí puedes obtener los datos del pago (usa los datos del webhook o consulta la API si es necesario)
-      // Por ejemplo, si tienes los datos necesarios en el webhook:
-      // const externalRef = req.body.external_reference; // Ajusta según tu estructura
-
-      // Si necesitas consultar la API de Mercado Pago, descomenta y ajusta:
-      /*
+      // 2. Consulta el pago en MercadoPago para obtener external_reference
       const mpResponse = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
         },
       });
+
       if (!mpResponse.ok) {
         const errorText = await mpResponse.text();
         console.error("❌ Error al consultar el pago:", errorText);
         return;
       }
+
       const paymentData = await mpResponse.json();
-      */
 
-      // Suponiendo que tienes paymentData:
-      // const externalRef = paymentData.external_reference;
-      // const [orderId, precioStr] = externalRef ? externalRef.split("|") : [];
-      // const producto = Number(orderId);
+      // 3. Extrae orderId del external_reference
+      const externalRef = paymentData.external_reference;
+      const [orderId] = externalRef ? externalRef.split("|") : [];
+      if (!orderId) {
+        console.warn("❌ external_reference inválido, no se publica en MQTT:", externalRef);
+        return;
+      }
 
-      // Marca el pago como procesado
+      // 4. Marca el pago como procesado
       const { error: insertError } = await supabase
         .from('pagos_procesados')
         .insert([{ payment_id: paymentId, fecha: new Date().toISOString() }]);
@@ -209,13 +207,12 @@ app.post("/update-payment", async (req, res) => {
         }
       }
 
-      // Publica en MQTT (ajusta el payload según tus necesidades)
-      const payload = { producto: "ID_DEL_PRODUCTO" }; // Ajusta esto
+      // 5. Publica en MQTT el orderId como string numérico
       mqttClient.publish("expendedora/snacko/venta", String(Number(orderId)), { qos: 1 }, err => {
         if (err) {
           console.error("❌ Error al publicar en MQTT:", err);
         } else {
-          console.log("✅ Mensaje MQTT publicado:", payload);
+          console.log("✅ Mensaje MQTT publicado:", String(Number(orderId)));
         }
       });
 
