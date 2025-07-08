@@ -7,9 +7,9 @@ import { fileURLToPath } from "url";
 import mqtt from "mqtt";
 import fetch from "node-fetch";
 import { createClient } from '@supabase/supabase-js';
-// import pool from './db.js';
 import session from "express-session";
 import bcrypt from "bcrypt";
+import crypto from "crypto"; // Agrega esto arriba si usas módulos ES
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -146,6 +146,42 @@ app.post("/update-payment", async (req, res) => {
 
   setImmediate(async () => {
     try {
+      // 1. Obtén los headers y query params
+      const xSignature = req.headers['x-signature'];
+      const xRequestId = req.headers['x-request-id'];
+      const dataID = req.query['data.id'];
+      // Tu clave secreta de Mercado Pago (¡NO es el access_token!)
+      const secret = '319c80e4632cabf2b92f13ec317a64a77ba2873049cb012e69d7e585f2f36715'; // <-- reemplaza por la tuya
+
+      // 2. Extrae ts y hash del header x-signature
+      let ts, hash;
+      if (xSignature) {
+        xSignature.split(',').forEach(part => {
+          const [key, value] = part.split('=');
+          if (key && value) {
+            if (key.trim() === 'ts') ts = value.trim();
+            if (key.trim() === 'v1') hash = value.trim();
+          }
+        });
+      }
+
+      // 3. Arma el template
+      let manifest = '';
+      if (dataID) manifest += `id:${dataID};`;
+      if (xRequestId) manifest += `request-id:${xRequestId};`;
+      if (ts) manifest += `ts:${ts};`;
+
+      // 4. Calcula el HMAC
+      const hmac = crypto.createHmac('sha256', secret);
+      hmac.update(manifest);
+      const sha = hmac.digest('hex');
+
+      // 5. Compara el hash
+      if (!hash || sha !== hash) {
+        console.warn("❌ Notificación rechazada: HMAC verification failed");
+        return;
+      }
+
       const paymentId = req.body?.data?.id || req.body?.resource;
       if (!paymentId) {
         console.warn("❌ No se recibió un ID de pago válido en el webhook.");
