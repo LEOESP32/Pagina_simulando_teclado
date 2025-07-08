@@ -146,14 +146,11 @@ app.post("/update-payment", async (req, res) => {
 
   setImmediate(async () => {
     try {
-      // 1. Obtén los headers y query params
       const xSignature = req.headers['x-signature'];
       const xRequestId = req.headers['x-request-id'];
       const dataID = req.query['data.id'];
-      // Tu clave secreta de Mercado Pago (¡NO es el access_token!)
-      const secret = '319c80e4632cabf2b92f13ec317a64a77ba2873049cb012e69d7e585f2f36715'; // <-- reemplaza por la tuya
+      const secret = '319c80e4632cabf2b92f13ec317a64a77ba2873049cb012e69d7e585f2f36715';
 
-      // 2. Extrae ts y hash del header x-signature
       let ts, hash;
       if (xSignature) {
         xSignature.split(',').forEach(part => {
@@ -165,18 +162,26 @@ app.post("/update-payment", async (req, res) => {
         });
       }
 
-      // 3. Arma el template
+      // Depuración
+      console.log("dataID:", dataID);
+      console.log("xRequestId:", xRequestId);
+      console.log("ts:", ts);
+
+      // Arma el template SOLO con los campos presentes
       let manifest = '';
       if (dataID) manifest += `id:${dataID};`;
       if (xRequestId) manifest += `request-id:${xRequestId};`;
       if (ts) manifest += `ts:${ts};`;
 
-      // 4. Calcula el HMAC
+      console.log("manifest:", manifest);
+
       const hmac = crypto.createHmac('sha256', secret);
       hmac.update(manifest);
       const sha = hmac.digest('hex');
 
-      // 5. Compara el hash
+      console.log("hash recibido:", hash);
+      console.log("hash calculado:", sha);
+
       if (!hash || sha !== hash) {
         console.warn("❌ Notificación rechazada: HMAC verification failed");
         return;
