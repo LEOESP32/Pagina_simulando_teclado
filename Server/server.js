@@ -146,6 +146,12 @@ app.post("/update-payment", async (req, res) => {
 
   setImmediate(async () => {
     try {
+      // Evita procesar notificaciones merchant_order
+      if (req.body.topic === "merchant_order") {
+        console.log("ℹ️ Notificación merchant_order ignorada.");
+        return;
+      }
+
       const xSignature = req.headers['x-signature'];
       const xRequestId = req.headers['x-request-id'];
       const dataID = req.query['data.id'];
