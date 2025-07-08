@@ -173,7 +173,7 @@ app.post("/update-payment", async (req, res) => {
       const mpResponse = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
+          Authorization: `Bearer APP_USR-4258140809744926-040100-e624f4abe67d98304f993caa40c81e84-228466455`,
         },
       });
 
