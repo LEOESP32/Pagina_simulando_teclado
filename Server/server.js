@@ -114,6 +114,11 @@ app.post("/create_preference", async (req, res) => {
       notification_url: "https://electronica2-maquina-expendedora.onrender.com/update-payment",
       auto_return: "approved",
       external_reference,
+      statement_descriptor: "Maquina Expendedora Snacko",
+      payer: {
+          first_name: "",
+          last_name: ""
+      },
     };
 
     const response = await preference.create({ body: preferenceData });
