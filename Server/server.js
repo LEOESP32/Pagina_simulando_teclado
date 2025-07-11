@@ -250,9 +250,18 @@ app.post("/update-payment", async (req, res) => {
       }
 
       // 4. Marca el pago como procesado
+      const fechaArgentina = new Date(Date.now() - 3 * 60 * 60 * 1000)
+        .toISOString()
+        .replace("T", " ")
+        .slice(0, 19); // "YYYY-MM-DD HH:MM:SS"
+
       const { error: insertError } = await supabase
         .from('pagos_procesados')
-        .insert([{ payment_id: paymentId, fecha: new Date().toISOString(), producto_comprado: Number(orderId) }]);
+        .insert([{
+          payment_id: paymentId,
+          fecha: fechaArgentina + " ARG",
+          producto_comprado: Number(orderId)
+        }]);
       if (insertError) {
         if (insertError.code === '23505') {
           console.warn("🔁 Pago ya procesado (inserción duplicada), ignorando:", paymentId);
