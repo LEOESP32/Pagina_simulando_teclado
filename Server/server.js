@@ -35,7 +35,7 @@ mqttClient.on("error", err => console.error("❌ Error MQTT:", err));
 
 // Mercado Pago
 const client = new MercadoPagoConfig({
-  accessToken: process.env.MP_ACCESS_TOKEN,
+  accessToken: process.env.ACCESS_TOKEN,
   options: { timeout: 5000 },
 });
 const preference = new Preference(client);
@@ -225,7 +225,7 @@ app.post("/update-payment", async (req, res) => {
       const mpResponse = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${process.env.MP_ACCESS_TOKEN}`,
+          Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
         },
       });
 
