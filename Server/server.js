@@ -2,7 +2,6 @@ import express from "express";
 import cors from "cors";
 import path from "path";
 import { MercadoPagoConfig, Preference } from "mercadopago";
-import dotenv from "dotenv";
 import { fileURLToPath } from "url";
 import mqtt from "mqtt";
 import fetch from "node-fetch";
@@ -18,9 +17,20 @@ const supabase = createClient(
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV4bW1td3RqZGVsaGhnb3hrY3lyIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MDc3Mjg1NiwiZXhwIjoyMDY2MzQ4ODU2fQ.HfWYBy_kKGu6I09bUejIpPl3vTok9sOgerKEDRG3ImY'
 );
 
-// Carga las variables desde /config/.env
-dotenv.config({ path: path.resolve(__dirname, "../config/.env") });
-console.log("Access Token cargado desde .env:", process.env.ACCESS_TOKEN);
+// Elimina la carga de dotenv y la referencia a /config/.env
+// dotenv.config({ path: path.resolve(__dirname, "../config/.env") });
+// console.log("Access Token cargado desde .env:", process.env.ACCESS_TOKEN);
+
+// Agrega las credenciales en duro al inicio del archivo
+const ACCESS_TOKEN = "APP_USR-4258140809744926-040100-e624f4abe67d98304f993caa40c81e84-228466455";
+const MP_WEBHOOK_SECRET = "319c80e4632cabf2b92f13ec317a64a77ba2873049cb012e69d7e585f2f36715";
+
+// Configura Mercado Pago
+const client = new MercadoPagoConfig({
+  accessToken: ACCESS_TOKEN,
+  options: { timeout: 5000 },
+});
+const preference = new Preference(client);
 
 const app = express();
 
@@ -33,12 +43,6 @@ const mqttClient = mqtt.connect("mqtts://736ca49d528b4c41bfd924bc491b6878.s1.eu.
 mqttClient.on("connect", () => console.log("✅ Conectado al broker MQTT"));
 mqttClient.on("error", err => console.error("❌ Error MQTT:", err));
 
-// Mercado Pago
-const client = new MercadoPagoConfig({
-  accessToken: process.env.ACCESS_TOKEN,
-  options: { timeout: 5000 },
-});
-const preference = new Preference(client);
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
@@ -160,7 +164,7 @@ app.post("/update-payment", async (req, res) => {
       const xSignature = req.headers['x-signature'];
       const xRequestId = req.headers['x-request-id'];
       const dataID = req.query['data.id'];
-      const secret = process.env.MP_WEBHOOK_SECRET;
+      const secret = MP_WEBHOOK_SECRET;
 
       let ts, hash;
       if (xSignature) {
@@ -225,7 +229,7 @@ app.post("/update-payment", async (req, res) => {
       const mpResponse = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
+          Authorization: `Bearer ${ACCESS_TOKEN}`,
         },
       });
 
