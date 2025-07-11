@@ -252,7 +252,7 @@ app.post("/update-payment", async (req, res) => {
       // 4. Marca el pago como procesado
       const { error: insertError } = await supabase
         .from('pagos_procesados')
-        .insert([{ payment_id: paymentId, fecha: new Date().toISOString() }]);
+        .insert([{ payment_id: paymentId, fecha: new Date().toISOString(), producto_comprado: Number(orderId) }]);
       if (insertError) {
         if (insertError.code === '23505') {
           console.warn("🔁 Pago ya procesado (inserción duplicada), ignorando:", paymentId);
