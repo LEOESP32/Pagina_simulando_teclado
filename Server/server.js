@@ -18,7 +18,8 @@ const supabase = createClient(
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV4bW1td3RqZGVsaGhnb3hrY3lyIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MDc3Mjg1NiwiZXhwIjoyMDY2MzQ4ODU2fQ.HfWYBy_kKGu6I09bUejIpPl3vTok9sOgerKEDRG3ImY'
 );
 
-dotenv.config({ path: path.resolve(__dirname, "../.env") });
+// Carga las variables desde /config/.env
+dotenv.config({ path: path.resolve(__dirname, "../config/.env") });
 console.log("Access Token cargado desde .env:", process.env.ACCESS_TOKEN);
 
 const app = express();
@@ -33,11 +34,10 @@ mqttClient.on("connect", () => console.log("✅ Conectado al broker MQTT"));
 mqttClient.on("error", err => console.error("❌ Error MQTT:", err));
 
 // Mercado Pago
-const client = new MercadoPagoConfig({ accessToken: 'APP_USR-4258140809744926-040100-e624f4abe67d98304f993caa40c81e84-228466455' });
-//const client = new MercadoPagoConfig({
-//  accessToken: process.env.ACCESS_TOKEN,
-//  options: { timeout: 5000 },
-//});
+const client = new MercadoPagoConfig({
+  accessToken: process.env.MP_ACCESS_TOKEN,
+  options: { timeout: 5000 },
+});
 const preference = new Preference(client);
 
 app.use(express.urlencoded({ extended: false }));
@@ -160,7 +160,7 @@ app.post("/update-payment", async (req, res) => {
       const xSignature = req.headers['x-signature'];
       const xRequestId = req.headers['x-request-id'];
       const dataID = req.query['data.id'];
-      const secret = '319c80e4632cabf2b92f13ec317a64a77ba2873049cb012e69d7e585f2f36715';
+      const secret = process.env.MP_WEBHOOK_SECRET;
 
       let ts, hash;
       if (xSignature) {
@@ -225,7 +225,7 @@ app.post("/update-payment", async (req, res) => {
       const mpResponse = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
         method: "GET",
         headers: {
-          Authorization: `Bearer APP_USR-4258140809744926-040100-e624f4abe67d98304f993caa40c81e84-228466455`,
+          Authorization: `Bearer ${process.env.MP_ACCESS_TOKEN}`,
         },
       });
 
